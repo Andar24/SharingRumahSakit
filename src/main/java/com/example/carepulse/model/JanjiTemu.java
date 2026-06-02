@@ -6,63 +6,68 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "janji_temu")
 public class JanjiTemu {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String kodeTiket; // Contoh: CP-2041
+    private String kodeTiket;
 
-    @ManyToOne
-    @JoinColumn(name = "pasien_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pasien_id")
     private Pasien pasien;
 
-    @ManyToOne
-    @JoinColumn(name = "dokter_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dokter_id")
     private Dokter dokter;
 
-    @ManyToOne
-    @JoinColumn(name = "jadwal_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "jadwal_id")
     private JadwalPraktik jadwalPraktik;
 
     private LocalDate tanggalKunjungan;
+    private String status;
 
-    // Status: "MENUNGGU_KEDATANGAN", "TIBA_DI_POLI", "SEDANG_DIPERIKSA", "SELESAI", "BATAL"
-    private String statusAntrean;
+    private Integer nomorAntreanUrut;
 
-    private String kategori; // "Konsultasi Rutin", "Darurat", dll
-
-    // Tambahkan di dalam file JanjiTemu.java
+    @Column(length = 500)
     private String keluhan;
-    private Integer nomorAntreanUrut; // Menyimpan angka urutan, misal: 1, 2, 3
 
     public JanjiTemu() {}
 
-    public JanjiTemu(String kodeTiket, Pasien pasien, Dokter dokter, JadwalPraktik jadwalPraktik, LocalDate tanggalKunjungan, String kategori) {
+    public JanjiTemu(String kodeTiket, Pasien pasien, Dokter dokter, JadwalPraktik jadwalPraktik, LocalDate tanggalKunjungan, String status) {
         this.kodeTiket = kodeTiket;
         this.pasien = pasien;
         this.dokter = dokter;
         this.jadwalPraktik = jadwalPraktik;
         this.tanggalKunjungan = tanggalKunjungan;
-        this.kategori = kategori;
-        this.statusAntrean = "MENUNGGU_KEDATANGAN"; // Default status
+        this.status = status;
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public String getKodeTiket() { return kodeTiket; }
     public void setKodeTiket(String kodeTiket) { this.kodeTiket = kodeTiket; }
+
     public Pasien getPasien() { return pasien; }
     public void setPasien(Pasien pasien) { this.pasien = pasien; }
+
     public Dokter getDokter() { return dokter; }
     public void setDokter(Dokter dokter) { this.dokter = dokter; }
+
     public JadwalPraktik getJadwalPraktik() { return jadwalPraktik; }
     public void setJadwalPraktik(JadwalPraktik jadwalPraktik) { this.jadwalPraktik = jadwalPraktik; }
+
     public LocalDate getTanggalKunjungan() { return tanggalKunjungan; }
     public void setTanggalKunjungan(LocalDate tanggalKunjungan) { this.tanggalKunjungan = tanggalKunjungan; }
-    public String getStatusAntrean() { return statusAntrean; }
-    public void setStatusAntrean(String statusAntrean) { this.statusAntrean = statusAntrean; }
-    public String getKategori() { return kategori; }
-    public void setKategori(String kategori) { this.kategori = kategori; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Integer getNomorAntreanUrut() { return nomorAntreanUrut; }
+    public void setNomorAntreanUrut(Integer nomorAntreanUrut) { this.nomorAntreanUrut = nomorAntreanUrut; }
+
+    public String getKeluhan() { return keluhan; }
+    public void setKeluhan(String keluhan) { this.keluhan = keluhan; }
 }

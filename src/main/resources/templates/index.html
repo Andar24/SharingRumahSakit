@@ -24,9 +24,6 @@
 </head>
 <body class="text-on-surface">
 
-<!-- ==============================================
-     1. VIEW BERANDA
-=============================================== -->
 <div id="view-beranda" class="spa-page active">
     <header class="bg-surface/80 backdrop-blur-md border-b border-outline-variant/10 shadow-sm sticky top-0 z-50 h-16">
         <nav class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto h-full">
@@ -73,7 +70,6 @@
             </div>
         </section>
 
-        <!-- Menu Akses Cepat -->
         <section class="py-12 px-6 md:px-10 bg-surface-container-low">
             <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
                 <button class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-left hover:-translate-y-1 transition-transform" onclick="navigateTo('view-layanan')">
@@ -130,7 +126,6 @@
             </div>
         </section>
 
-        <!-- Footer -->
         <footer class="bg-gray-50 border-t border-gray-200 py-10 px-8 mt-10">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                 <div>
@@ -146,9 +141,6 @@
     </main>
 </div>
 
-<!-- ==============================================
-     2. VIEW LAYANAN POLIKLINIK
-=============================================== -->
 <div id="view-layanan" class="spa-page">
     <header class="bg-surface/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 h-16">
         <nav class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto h-full">
@@ -190,9 +182,6 @@
     </main>
 </div>
 
-<!-- ==============================================
-     3. VIEW CARI DOKTER
-=============================================== -->
 <div id="view-cari-dokter" class="spa-page">
     <header class="bg-surface/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 h-16">
         <nav class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto h-full">
@@ -218,9 +207,45 @@
         </aside>
 
         <div class="flex-1 space-y-6">
+            <div class="bg-blue-50 rounded-2xl p-6 shadow-sm border border-blue-200 mb-6">
+                <h2 class="text-xl font-bold text-primary mb-4 flex items-center gap-2"><span class="material-symbols-outlined">confirmation_number</span> Formulir Pendaftaran Antrean</h2>
+
+                <form id="formBookingAPI" class="space-y-4">
+                    <div>
+                        <label class="block font-bold text-blue-900 mb-1 text-sm">Siapa yang akan berobat?</label>
+                        <select id="booking-pasien" class="w-full border border-blue-300 rounded-xl p-3 font-bold text-gray-700 outline-none focus:ring-2 focus:ring-primary bg-white" required>
+                            <option value="">-- Memuat Data Keluarga --</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-1 text-sm">Pilih Poliklinik</label>
+                            <select id="booking-poli" class="w-full border border-gray-300 rounded-xl p-3 bg-white outline-none focus:border-primary" required>
+                                <option value="">-- Memuat Poli --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-1 text-sm">Tanggal Kunjungan</label>
+                            <input id="booking-tanggal" type="date" class="w-full border border-gray-300 rounded-xl p-3 bg-white outline-none focus:border-primary" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1 text-sm">Pilih Dokter & Jadwal</label>
+                        <select id="booking-jadwal" class="w-full border border-blue-400 bg-blue-50 rounded-xl p-3 outline-none" required>
+                            <option value="">-- Pilih Poli Dahulu --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1 text-sm">Keluhan</label>
+                        <textarea id="booking-keluhan" rows="2" class="w-full border border-gray-300 rounded-xl p-3 bg-white outline-none focus:border-primary" placeholder="Tuliskan keluhan singkat..." required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-blue-700 shadow-md transition-all">Ambil Nomor Antrean</button>
+                </form>
+
+            </div>
+
             <p class="text-gray-600">Ditemukan <span class="font-bold text-gray-900 text-lg">2 Dokter</span></p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Dokter 1 -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                     <div class="p-6 flex gap-4">
                         <img alt="Dr. Aris" class="w-24 h-24 rounded-xl object-cover" src="https://ui-avatars.com/api/?name=Aris+Purwanto&background=0D8ABC&color=fff"/>
@@ -233,10 +258,8 @@
                     <div class="p-6 bg-gray-50 border-t border-gray-100">
                         <p class="text-sm font-bold mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm">schedule</span> Jadwal Hari Ini (Selasa)</p>
                         <div class="flex gap-2 mb-6"><span class="px-3 py-1.5 bg-white border border-gray-200 text-sm rounded-lg font-medium">09:00 - 11:00</span></div>
-                        <button class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:opacity-90" onclick="navigateTo('view-auth'); toggleAuth('login');">Buat Janji Temu</button>
                     </div>
                 </div>
-                <!-- Dokter 2 -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                     <div class="p-6 flex gap-4">
                         <img alt="Dr. Sarah" class="w-24 h-24 rounded-xl object-cover" src="https://ui-avatars.com/api/?name=Sarah+Wijaya&background=E11D48&color=fff"/>
@@ -249,7 +272,6 @@
                     <div class="p-6 bg-gray-50 border-t border-gray-100">
                         <p class="text-sm font-bold mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm">schedule</span> Jadwal Hari Ini (Selasa)</p>
                         <div class="flex gap-2 mb-6"><span class="px-3 py-1.5 bg-white border border-gray-200 text-sm rounded-lg font-medium">10:00 - 14:00</span></div>
-                        <button class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:opacity-90" onclick="navigateTo('view-auth'); toggleAuth('login');">Buat Janji Temu</button>
                     </div>
                 </div>
             </div>
@@ -257,9 +279,6 @@
     </main>
 </div>
 
-<!-- ==============================================
-     4. VIEW AUTH (LOGIN, REGISTER, FORGOT)
-=============================================== -->
 <div id="view-auth" class="spa-page">
     <main class="min-h-screen w-full flex flex-col md:flex-row">
         <section class="hidden md:flex md:w-1/2 bg-primary items-center justify-center p-12 text-white relative">
@@ -276,7 +295,6 @@
         </section>
         <section class="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
             <div class="w-full max-w-[400px]">
-                <!-- LOGIN FORM -->
                 <div id="login-container">
                     <h2 class="text-4xl font-bold text-gray-800 mb-2">Selamat Datang</h2>
                     <p class="text-gray-500 mb-8 text-lg">Masukkan detail akun untuk melanjutkan.</p>
@@ -302,15 +320,36 @@
                     </div>
                 </div>
 
-                <!-- REGISTER FORM -->
                 <div id="register-container" style="display:none;">
-                    <h2 class="text-4xl font-bold text-gray-800 mb-6">Daftar Pasien</h2>
-                    <form id="registerFormAPI" class="space-y-5">
-                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary" id="reg-name" type="text" placeholder="Nama Lengkap" required/></div>
-                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary" id="reg-email" type="email" placeholder="Email Aktif" required/></div>
+                    <h2 class="text-4xl font-bold text-gray-800 mb-6">Daftar Pasien Baru</h2>
+                    <form id="registerFormAPI" class="space-y-4">
+                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-3.5 outline-none focus:border-primary" id="reg-name" type="text" placeholder="Nama Lengkap KTP" required/></div>
+                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-3.5 outline-none focus:border-primary" id="reg-email" type="email" placeholder="Email Aktif" required/></div>
+                        <div><input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-3.5 outline-none focus:border-primary" id="reg-nik" type="text" placeholder="NIK (16 Digit)" maxlength="16" required/></div>
+
                         <div class="grid grid-cols-2 gap-4">
-                            <select class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary text-gray-600" id="reg-blood"><option value="A">Gol. A</option><option value="B">Gol. B</option><option value="AB">Gol. AB</option><option value="O">Gol. O</option></select>
-                            <input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-4 outline-none focus:border-primary" id="reg-password" type="password" placeholder="Buat Sandi" required/>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 ml-1 block mb-1">Tanggal Lahir</label>
+                                <input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-3.5 outline-none focus:border-primary" id="reg-dob" type="date" required/>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 ml-1 block mb-1">Jenis Kelamin</label>
+                                <select class="w-full bg-gray-50 border border-gray-300 rounded-xl p-3.5 outline-none focus:border-primary text-gray-600" id="reg-gender">
+                                    <option value="L">Laki-laki</option><option value="P">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 ml-1 block mb-1">Golongan Darah</label>
+                                <select class="w-full bg-gray-50 border border-gray-300 rounded-xl p-3.5 outline-none focus:border-primary text-gray-600" id="reg-blood">
+                                    <option value="A">Gol. A</option><option value="B">Gol. B</option><option value="AB">Gol. AB</option><option value="O">Gol. O</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500 ml-1 block mb-1">Sandi Keamanan</label>
+                                <input class="w-full bg-gray-50 border border-gray-300 rounded-xl p-3.5 outline-none focus:border-primary" id="reg-password" type="password" placeholder="Buat Sandi" required/>
+                            </div>
                         </div>
                         <button type="submit" class="w-full bg-primary text-white font-bold text-lg p-4 rounded-xl flex justify-center items-center gap-2 hover:bg-blue-700 transition-all mt-4">
                             Buat Akun <span class="material-symbols-outlined text-[24px]">person_add</span>
@@ -319,7 +358,6 @@
                     <div class="mt-8 text-center text-gray-500">Sudah punya akun? <button class="text-primary font-bold hover:underline" onclick="toggleAuth('login')">Masuk di sini</button></div>
                 </div>
 
-                <!-- FORGOT PASSWORD FORM -->
                 <div id="forgot-container" style="display:none;">
                     <h2 class="text-4xl font-bold text-gray-800 mb-2">Lupa Sandi?</h2>
                     <p class="text-gray-500 mb-8 text-lg">Masukkan email terdaftar, kami akan memulihkannya.</p>
@@ -336,9 +374,6 @@
     </main>
 </div>
 
-<!-- ==============================================
-     5. VIEW DASHBOARD ADMIN (DENGAN TAMBAH POLI)
-=============================================== -->
 <div id="view-dashboard-admin" class="spa-page">
     <div class="flex min-h-screen bg-surface-container-low">
         <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
@@ -352,20 +387,30 @@
         </aside>
 
         <main class="flex-1 ml-[280px] p-10">
-            <h2 class="text-3xl font-bold mb-10">Pusat Manajemen Akun</h2>
-            <!-- GRID 3 KOLOM: Tambah Dokter, Admin, Poli -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Tambah Dokter -->
+            <h2 class="text-3xl font-bold mb-10">Pusat Manajemen Rumah Sakit</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <div class="flex items-center gap-4 mb-6 text-blue-600"><span class="material-symbols-outlined text-[32px]">person_add</span><h3 class="font-bold text-xl text-gray-800">Tambah Dokter</h3></div>
+                    <div class="flex items-center gap-4 mb-6 text-primary"><span class="material-symbols-outlined text-[32px]">domain_add</span><h3 class="font-bold text-xl text-gray-800">Buka Poliklinik Baru</h3></div>
+                    <form id="formAddPoliMaster" class="space-y-4">
+                        <input type="text" id="new-poli-master-nama" placeholder="Nama Poli (Contoh: Klinik Gigi)" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <input type="text" id="new-poli-master-ruang" placeholder="Lokasi Ruangan (Contoh: Gedung B)" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <button type="submit" class="bg-primary hover:bg-blue-700 text-white w-full py-3 rounded-xl font-bold transition">Tambahkan Poli</button>
+                    </form>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex items-center gap-4 mb-6 text-blue-600"><span class="material-symbols-outlined text-[32px]">person_add</span><h3 class="font-bold text-xl text-gray-800">Daftarkan Dokter</h3></div>
                     <form id="formAddDokter" class="space-y-4">
+                        <select id="new-dokter-poli" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required><option value="">-- Memuat Poli --</option></select>
                         <input type="text" id="new-dokter-nama" placeholder="Nama & Gelar" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
                         <input type="email" id="new-dokter-email" placeholder="Email Dokter" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
                         <input type="password" id="new-dokter-pass" placeholder="Sandi Awal" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
                         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-xl font-bold transition">Daftarkan Dokter</button>
                     </form>
                 </div>
-                <!-- Tambah Admin -->
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
                     <div class="flex items-center gap-4 mb-6 text-purple-600"><span class="material-symbols-outlined text-[32px]">admin_panel_settings</span><h3 class="font-bold text-xl text-gray-800">Tambah Admin</h3></div>
                     <form id="formAddAdmin" class="space-y-4">
@@ -375,7 +420,6 @@
                         <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white w-full py-3 rounded-xl font-bold transition">Tambahkan Admin</button>
                     </form>
                 </div>
-                <!-- Tambah Staf Poli -->
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
                     <div class="flex items-center gap-4 mb-6 text-green-600"><span class="material-symbols-outlined text-[32px]">support_agent</span><h3 class="font-bold text-xl text-gray-800">Tambah Staf Poli</h3></div>
                     <form id="formAddPoli" class="space-y-4">
@@ -390,9 +434,6 @@
     </div>
 </div>
 
-<!-- ==============================================
-     6. VIEW DASHBOARD POLI (BARU)
-=============================================== -->
 <div id="view-dashboard-poli" class="spa-page">
     <div class="flex min-h-screen bg-surface-container-low">
         <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
@@ -426,7 +467,6 @@
                 </table>
             </div>
 
-            <!-- FORM UBAH SANDI POLI -->
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-xl">
                 <div class="flex items-center gap-4 mb-6"><span class="material-symbols-outlined text-[32px] text-gray-500">lock_reset</span><h3 class="font-bold text-xl">Ubah Kata Sandi Poli</h3></div>
                 <form id="formChangePassPoli" class="space-y-4">
@@ -439,9 +479,6 @@
     </div>
 </div>
 
-<!-- ==============================================
-     7. VIEW DASHBOARD DOKTER
-=============================================== -->
 <div id="view-dashboard-dokter" class="spa-page">
     <div class="flex min-h-screen bg-surface-container-low">
         <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
@@ -454,7 +491,25 @@
 
         <main class="flex-1 ml-[280px] p-10">
             <h2 class="text-4xl font-bold mb-10">Pengaturan Akun</h2>
-            <!-- FORM UBAH SANDI DOKTER -->
+
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-xl mb-8">
+                <div class="flex items-center gap-4 mb-6"><span class="material-symbols-outlined text-[32px] text-primary">calendar_month</span><h3 class="font-bold text-2xl text-gray-800">Atur Jadwal Praktik</h3></div>
+                <form id="formAddJadwal" class="space-y-4">
+                    <select id="jadwal-hari" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                        <option value="Senin">Senin</option><option value="Selasa">Selasa</option><option value="Rabu">Rabu</option><option value="Kamis">Kamis</option><option value="Jumat">Jumat</option><option value="Sabtu">Sabtu</option>
+                    </select>
+                    <div class="flex gap-4">
+                        <div class="w-1/2"><label class="text-xs font-bold text-gray-600">Jam Mulai</label><input type="time" id="jadwal-mulai" class="w-full border border-gray-300 p-3 rounded-xl bg-white" required></div>
+                        <div class="w-1/2"><label class="text-xs font-bold text-gray-600">Jam Selesai</label><input type="time" id="jadwal-selesai" class="w-full border border-gray-300 p-3 rounded-xl bg-white" required></div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-600">Kuota Maksimal Pasien Harian</label>
+                        <input type="number" id="jadwal-kuota" placeholder="Contoh: 20" class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50" required>
+                    </div>
+                    <button type="submit" class="bg-primary hover:bg-blue-700 text-white w-full py-3 rounded-xl font-bold mt-2">Terbitkan Jadwal Praktik</button>
+                </form>
+            </div>
+
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-xl">
                 <div class="flex items-center gap-4 mb-8"><span class="material-symbols-outlined text-[32px] text-gray-500">lock_reset</span><h3 class="font-bold text-2xl">Ubah Kata Sandi</h3></div>
                 <form id="formChangePassDokter" class="space-y-6">
@@ -467,9 +522,6 @@
     </div>
 </div>
 
-<!-- ==============================================
-     8. VIEW DASHBOARD PASIEN
-=============================================== -->
 <div id="view-dashboard-pasien" class="spa-page">
     <div class="flex min-h-screen bg-surface-container-low">
         <aside class="w-[280px] bg-white shadow-md flex flex-col p-6 fixed h-full z-40">
@@ -484,12 +536,35 @@
             <h2 class="text-4xl font-bold mb-4 text-primary">Selamat Datang di CarePulse</h2>
             <p class="text-lg text-gray-600 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm inline-block mb-10">Akun pasien Anda berhasil dibuat dan diverifikasi.</p>
 
-            <!-- FORM UBAH SANDI PASIEN -->
+            <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm mb-10">
+                <h3 class="font-bold text-2xl mb-4 flex items-center gap-2 text-primary"><span class="material-symbols-outlined">family_restroom</span> Anggota Keluarga Saya</h3>
+                <ul id="list-keluarga-ui" class="space-y-3 mb-8">
+                    <li class="text-gray-400 italic">Memuat data keluarga...</li>
+                </ul>
+
+                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                    <h4 class="font-bold text-lg text-blue-900 mb-4">Tambahkan Anggota Keluarga (Anak/Wali)</h4>
+                    <form id="formTambahKeluarga" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input class="w-full border border-gray-300 p-4 rounded-xl bg-white outline-none focus:border-primary" id="fam-name" type="text" placeholder="Nama Lengkap Anggota Keluarga" required/>
+                        <input class="w-full border border-gray-300 p-4 rounded-xl bg-white outline-none focus:border-primary" id="fam-nik" type="text" placeholder="NIK (Dari KK/KIA)" maxlength="16" required/>
+                        <div>
+                            <label class="text-xs font-bold text-blue-700 block mb-1">Tanggal Lahir</label>
+                            <input class="w-full border border-gray-300 p-4 rounded-xl bg-white outline-none focus:border-primary" id="fam-dob" type="date" required/>
+                        </div>
+                        <div class="flex gap-2 items-end">
+                            <select class="w-1/2 border border-gray-300 p-4 rounded-xl bg-white outline-none focus:border-primary" id="fam-gender"><option value="L">Laki-laki</option><option value="P">Perempuan</option></select>
+                            <select class="w-1/2 border border-gray-300 p-4 rounded-xl bg-white outline-none focus:border-primary" id="fam-blood"><option value="A">Gol. A</option><option value="B">Gol. B</option><option value="AB">Gol. AB</option><option value="O">Gol. O</option></select>
+                        </div>
+                        <button type="submit" class="md:col-span-2 bg-primary text-white font-bold p-4 rounded-xl hover:bg-blue-700 transition">Simpan Anggota Keluarga</button>
+                    </form>
+                </div>
+            </div>
+
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-xl">
                 <div class="flex items-center gap-4 mb-8"><span class="material-symbols-outlined text-[32px] text-gray-500">lock_reset</span><h3 class="font-bold text-2xl">Keamanan: Ubah Kata Sandi</h3></div>
                 <form id="formChangePassPasien" class="space-y-6">
-                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Lama</label><input type="password" id="pasien-old-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50" required></div>
-                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Baru</label><input type="password" id="pasien-new-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50" required></div>
+                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Lama</label><input type="password" id="pasien-old-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50 outline-none focus:border-primary" required></div>
+                    <div><label class="font-bold text-sm text-gray-600 mb-1 block">Kata Sandi Baru</label><input type="password" id="pasien-new-pass" class="w-full border border-gray-300 p-4 rounded-xl bg-gray-50 outline-none focus:border-primary" required></div>
                     <button type="submit" class="bg-primary hover:bg-blue-700 text-white w-full py-4 rounded-xl font-bold text-lg mt-4">Simpan Sandi Baru</button>
                 </form>
             </div>
