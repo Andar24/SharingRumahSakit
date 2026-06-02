@@ -28,4 +28,15 @@ public class DokterController {
         jadwalPraktikRepository.save(jp);
         return ResponseEntity.ok(Map.of("message", "Jadwal Praktik berhasil ditambahkan!"));
     }
+    @Autowired
+    private JanjiTemuRepository janjiTemuRepository;
+
+    // API untuk melihat daftar pasien yang siap diperiksa hari ini
+    @GetMapping("/antrean-hari-ini")
+    public ResponseEntity<?> getAntreanDokter(@RequestParam String email) {
+        // Ambil semua janji temu, filter yang dokternya cocok dan statusnya "TIBA_DI_POLI"
+        return ResponseEntity.ok(janjiTemuRepository.findAll().stream()
+                .filter(j -> j.getDokter().getEmail().equals(email) && j.getStatus().equals("TIBA_DI_POLI"))
+                .toList());
+    }
 }

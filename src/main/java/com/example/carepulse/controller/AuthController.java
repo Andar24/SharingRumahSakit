@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,55 +19,60 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    // 1. LOGIN
+    // --- API LOGIN ---
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> data) {
-        Optional<User> userOpt = userRepository.findByEmail(data.get("email"));
+        try {
+            Optional<User> userOpt = userRepository.findByEmail(data.get("email"));
 
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            if (user.getPassword().equals(data.get("password"))) {
-                Map<String, Object> res = new HashMap<>();
-                res.put("status", "success");
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                if (user.getPassword().equals(data.get("password"))) {
 
-                // Samakan nama role untuk file app.js
-                String role = user.getRole();
-                if (role.equals("PEGAWAI_POLI")) role = "POLI";
+                    Map<String, Object> res = new HashMap<>();
+                    res.put("status", "success");
 
-                res.put("role", role);
-                res.put("nama", user.getNamaLengkap());
-                res.put("email", user.getEmail());
-                return ResponseEntity.ok(res);
+                    // Filter role untuk staff poli
+                    String role = user.getRole();
+                    if ("PEGAWAI_POLI".equals(role)) role = "POLI";
+
+                    res.put("role", role);
+                    res.put("nama", user.getNamaLengkap());
+                    res.put("email", user.getEmail());
+
+                    return ResponseEntity.ok(res); // 200 OK
+                }
             }
+
+            return ResponseEntity.status(401).body(Map.of("message", "Email atau Kata Sandi salah!"));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "Server Error: " + e.getMessage()));
         }
-        return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email atau Sandi salah!"));
     }
 
-    // 2. REGISTER PASIEN
+    // --- API REGISTER ---
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> data) {
-        if (userRepository.existsByEmail(data.get("email"))) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email sudah terdaftar!"));
-        }
-        // Simpan pasien ke database permanen
-        Pasien pasien = new Pasien(data.get("email"), data.get("password"), data.get("nama"), "-");
-        userRepository.save(pasien);
-        return ResponseEntity.ok(Collections.singletonMap("status", "success"));
-    }
-
-    // 3. UBAH PASSWORD
-    @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> data) {
-        Optional<User> userOpt = userRepository.findByEmail(data.get("email"));
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            if (user.getPassword().equals(data.get("oldPassword"))) {
-                // Pastikan model User.java Anda sudah memiliki public void setPassword(String password)
-                user.setPassword(data.get("newPassword"));
-                userRepository.save(user);
-                return ResponseEntity.ok(Collections.singletonMap("status", "success"));
+        try {
+            if (userRepository.existsByEmail(data.get("email"))) {
+                return ResponseEntity.status(400).body(Map.of("message", "Email sudah terdaftar di sistem!"));
             }
+
+            Pasien pasienBaru = new Pasien(
+                    data.get("email"),
+                    data.get("password"),
+                    data.get("nama"),
+                    data.get("nik"),
+                    LocalDate.parse(data.get("tanggalLahir")),
+                    data.get("jenisKelamin")
+            );
+
+            userRepository.save(pasienBaru);
+            return ResponseEntity.ok(Map.of("status", "success"));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(Map.of("message", "Format pengisian formulir tidak valid."));
         }
-        return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Kata sandi lama salah atau user tidak ditemukan!"));
     }
 }

@@ -13,13 +13,12 @@ public class Pasien extends User {
     private String nik;
 
     private LocalDate tanggalLahir;
-    private String jenisKelamin; // "L" atau "P"
+    private String jenisKelamin;
     private String golonganDarah;
 
-    // Relasi untuk Akun Keluarga (Orang Tua ke Anak)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "akun_utama_id")
-    @JsonIgnore // Mencegah error looping saat sistem membaca data ke JSON
+    @JsonIgnore
     private Pasien akunUtama;
 
     @OneToMany(mappedBy = "akunUtama", cascade = CascadeType.ALL)
@@ -28,24 +27,24 @@ public class Pasien extends User {
 
     public Pasien() {}
 
-    // --- CONSTRUCTOR LAMA (Memperbaiki error di AuthController & DataSeeder) ---
+    // 1. CONSTRUCTOR REGISTER WEB (Yang baru kita buat untuk login)
+    public Pasien(String email, String password, String namaLengkap, String nik, LocalDate tanggalLahir, String jenisKelamin) {
+        super(email, password, "PASIEN", namaLengkap);
+        this.nik = nik;
+        this.tanggalLahir = tanggalLahir;
+        this.jenisKelamin = jenisKelamin;
+        this.golonganDarah = "-";
+    }
+
+    // 2. CONSTRUCTOR LAMA (Untuk DataSeeder agar tidak error)
     public Pasien(String email, String password, String namaLengkap, String golonganDarah) {
         super(email, password, "PASIEN", namaLengkap);
         this.golonganDarah = golonganDarah;
     }
 
-    // --- CONSTRUCTOR BARU (Untuk pendaftaran akun utama/orang tua ke depan) ---
-    public Pasien(String email, String password, String namaLengkap, String nik, LocalDate tanggalLahir, String jenisKelamin, String golonganDarah) {
-        super(email, password, "PASIEN", namaLengkap);
-        this.nik = nik;
-        this.tanggalLahir = tanggalLahir;
-        this.jenisKelamin = jenisKelamin;
-        this.golonganDarah = golonganDarah;
-    }
-
-    // --- CONSTRUCTOR KHUSUS (Untuk pendaftaran akun anak) ---
+    // 3. CONSTRUCTOR KHUSUS ANAK (Untuk memperbaiki error di PasienController baris 25)
     public Pasien(String namaLengkap, String nik, LocalDate tanggalLahir, String jenisKelamin, String golonganDarah, Pasien akunUtama) {
-        // Membuat email sistem otomatis menggunakan NIK agar tidak bentrok
+        // Otomatis membuat email dummy agar tidak bentrok di sistem User
         super(nik + "@keluarga.carepulse.system", "NO_LOGIN", "PASIEN", namaLengkap);
         this.nik = nik;
         this.tanggalLahir = tanggalLahir;
@@ -71,7 +70,5 @@ public class Pasien extends User {
     public void setAkunUtama(Pasien akunUtama) { this.akunUtama = akunUtama; }
 
     public List<Pasien> getAnggotaKeluarga() { return anggotaKeluarga; }
-
-    // Typo 3 'g' sudah diperbaiki menjadi 2 'g' di bawah ini:
     public void setAnggotaKeluarga(List<Pasien> anggotaKeluarga) { this.anggotaKeluarga = anggotaKeluarga; }
 }

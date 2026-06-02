@@ -54,4 +54,10 @@ public class AdminController {
         userRepository.save(poli);
         return ResponseEntity.ok(Collections.singletonMap("message", "Staf Poli berhasil ditambahkan!"));
     }
+
+    @GetMapping("/list-users")
+    public ResponseEntity<?> getAllUsers() {
+        // userRepository.findAll() akan mengambil seluruh data dari tabel Users
+        return ResponseEntity.ok(userRepository.findAll());
+    }
 }

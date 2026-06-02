@@ -21,8 +21,21 @@ public class PasienController {
     @PostMapping("/add-keluarga")
     public ResponseEntity<?> tambahAnggotaKeluarga(@RequestBody Map<String, String> data) {
         Optional<Pasien> parentOpt = pasienRepository.findByEmail(data.get("emailParent"));
-        if (parentOpt.isEmpty()) return ResponseEntity.badRequest().body(Map.of("message", "Akun utama tidak ditemukan!"));
-        Pasien anak = new Pasien(data.get("namaLengkap"), data.get("nik"), LocalDate.parse(data.get("tanggalLahir")), data.get("jenisKelamin"), data.get("golonganDarah"), parentOpt.get());
+        if (parentOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Akun utama tidak ditemukan!"));
+        }
+
+        Pasien anak = new Pasien();
+        anak.setEmail(data.get("nik") + "@keluarga.carepulse.system");
+        anak.setPassword("NO_LOGIN");
+        anak.setRole("PASIEN");
+        anak.setNamaLengkap(data.get("namaLengkap"));
+        anak.setNik(data.get("nik"));
+        anak.setTanggalLahir(LocalDate.parse(data.get("tanggalLahir")));
+        anak.setJenisKelamin(data.get("jenisKelamin"));
+        anak.setGolonganDarah(data.get("golonganDarah"));
+        anak.setAkunUtama(parentOpt.get());
+
         pasienRepository.save(anak);
         return ResponseEntity.ok(Map.of("message", "Keluarga berhasil ditambahkan!"));
     }
@@ -31,10 +44,14 @@ public class PasienController {
     public ResponseEntity<?> getListKeluarga(@RequestParam String emailParent) {
         Optional<Pasien> parentOpt = pasienRepository.findByEmail(emailParent);
         if (parentOpt.isEmpty()) return ResponseEntity.badRequest().build();
+
         Pasien parent = parentOpt.get();
         List<Map<String, Object>> response = new ArrayList<>();
+
         response.add(Map.of("id", parent.getId(), "nama", parent.getNamaLengkap() + " (Diri Sendiri)", "umur", Period.between(parent.getTanggalLahir(), LocalDate.now()).getYears()));
+
         pasienRepository.findByAkunUtama(parent).forEach(k -> response.add(Map.of("id", k.getId(), "nama", k.getNamaLengkap() + " (Keluarga)", "umur", Period.between(k.getTanggalLahir(), LocalDate.now()).getYears())));
+
         return ResponseEntity.ok(response);
     }
 
@@ -67,14 +84,35 @@ public class PasienController {
 
             int nomorAntrean = (int) antreanSekarang + 1;
 
-            JanjiTemu tiket = new JanjiTemu("CP-" + (System.currentTimeMillis() % 10000), pasien, jadwal.getDokter(), jadwal, tanggal, "Umum");
+            // PERBAIKAN: MENGGUNAKAN SETTER AGAR TIDAK ERROR CONSTRUCTOR
+            JanjiTemu tiket = new JanjiTemu();
+            tiket.setKodeTiket("CP-" + (System.currentTimeMillis() % 10000));
+            tiket.setPasien(pasien);
+            tiket.setDokter(jadwal.getDokter());
+            tiket.setJadwalPraktik(jadwal);
+            tiket.setTanggalKunjungan(tanggal);
+            tiket.setStatus("Umum");
             tiket.setNomorAntreanUrut(nomorAntrean);
             tiket.setKeluhan(data.get("keluhan"));
+
             janjiTemuRepository.save(tiket);
 
             return ResponseEntity.ok(Map.of("status", "success", "kodeTiket", tiket.getKodeTiket(), "message", "BERHASIL! Anda mendapat Antrean Nomor " + nomorAntrean + ". Silakan datang pada " + jadwal.getJamMulai() + "."));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
+    }
+
+    @GetMapping("/riwayat")
+    public ResponseEntity<?> getRiwayatPasien(@RequestParam String email) {
+        Optional<Pasien> pasienOpt = pasienRepository.findByEmail(email);
+        if (pasienOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Pasien tidak ditemukan"));
+        }
+
+        Pasien pasien = pasienOpt.get();
+        return ResponseEntity.ok(janjiTemuRepository.findAll().stream()
+                .filter(j -> j.getPasien().getId().equals(pasien.getId()))
+                .toList());
     }
 }
