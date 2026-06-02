@@ -1,70 +1,24 @@
-/* GLOBAL VARIABLES & RESET */
-:root {
-    --primary: #2563eb; --primary-hover: #1d4ed8; --bg-main: #f8fafc;
-    --surface: #ffffff; --text-dark: #0f172a; --text-muted: #64748b;
-    --border: #e2e8f0; --danger: #ef4444; --success: #16a34a;
-}
+/* GLOBAL RESET & FONTS */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-body { background-color: var(--bg-main); color: var(--text-dark); overflow-x: hidden; }
-a { text-decoration: none; color: inherit; }
-button, input { outline: none; border: none; font-family: inherit; }
-button { cursor: pointer; transition: 0.3s; font-weight: 500; }
+body { background-color: #f7f9fb; overflow-x: hidden; color: #191c1e; }
 
-/* SPA & COMPONENTS */
-.spa-page { display: none; animation: fadeIn 0.4s ease; min-height: 100vh; width: 100vw; }
+/* SPA (SINGLE PAGE APPLICATION) ANIMATIONS */
+.spa-page { display: none; animation: fadeIn 0.3s ease-out forwards; min-height: 100vh; width: 100vw; }
 .spa-page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-.btn-primary { background: var(--primary); color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
-.btn-outline { background: transparent; color: var(--primary); padding: 12px 24px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-.badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-block; }
+/* CUSTOM SCROLLBAR (Tampilan Elegan ala Aplikasi JKN) */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* BERANDA */
-.navbar { background: var(--surface); padding: 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
-.nav-content { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-size: 22px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-.logo-icon { background: var(--primary); color: white; padding: 4px 8px; border-radius: 6px; }
-.nav-links { display: flex; gap: 30px; font-weight: 500; font-size: 14px; color: var(--text-muted); }
-
-.hero { display: flex; align-items: center; justify-content: space-between; padding: 80px 0; gap: 50px; }
-.hero-text { flex: 1; }
-.badge-accreditation { background: #dcfce7; color: #166534; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; margin-bottom: 15px; }
-.hero-text h1 { font-size: 46px; line-height: 1.2; margin: 20px 0; }
-.hero-text h1 span { color: var(--primary); }
-.hero-text p { color: var(--text-muted); font-size: 16px; margin-bottom: 35px; line-height: 1.6; max-width: 450px; }
-.hero-buttons { display: flex; gap: 15px; }
-.hero-img-container { flex: 1; display: flex; justify-content: flex-end; }
-.hero-img-box { background: #cce3f8; width: 100%; max-width: 500px; height: 350px; border-radius: 20px; box-shadow: -20px 20px 0px 0px rgba(226,232,240,0.6); background-image: url('https://images.unsplash.com/photo-1551076805-e1869033e561'); background-size: cover; background-position: center; }
-
-/* LOGIN */
-.login-layout { display: flex; height: 100vh; background: white; }
-.login-left { flex: 1.2; background: url('https://images.unsplash.com/photo-1579684385127-1ef15d508118') center/cover; position: relative; display: flex; flex-direction: column; justify-content: center; padding: 60px; color: white; }
-.login-left::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.4)); z-index: 1; }
-.login-left-content { position: relative; z-index: 2; max-width: 500px; }
-.login-left-content h1 { font-size: 48px; line-height: 1.1; margin-bottom: 20px; }
-.login-right { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; background: var(--surface); }
-.login-box { width: 100%; max-width: 380px; }
-.login-box h2 { font-size: 28px; margin-bottom: 10px; }
-.login-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; }
-.login-input-group { margin-bottom: 20px; }
-.login-input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-.login-input-group input { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
-.login-btn { width: 100%; padding: 14px; margin-top: 10px; }
-.back-link { text-align: center; margin-top: 25px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
-
-/* DASHBOARD */
-.dash-layout { display: flex; height: 100vh; overflow: hidden; background: var(--bg-main); }
-.sidebar { width: 250px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-.sidebar-menu { padding: 20px 10px; flex: 1; overflow-y: auto; }
-.menu-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 8px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; }
-.menu-item:hover { background: #f1f5f9; color: var(--text-dark); }
-.menu-item.active { background: #eff6ff; color: var(--primary); font-weight: 600; }
-.main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.topbar { height: 70px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
-.search-bar { background: #f1f5f9; padding: 10px 18px; border-radius: 20px; width: 350px; display: flex; gap: 10px; align-items: center; }
-.search-bar input { background: transparent; width: 100%; font-size: 14px; }
-.profile-badge { display: flex; align-items: center; gap: 20px; }
-.content-area { flex: 1; padding: 30px; overflow-y: auto; }
+/* GLASSMORPHISM CARD UTILITY */
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CarePulse | Dasbor Pasien</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <script id="tailwind-config">
+        tailwind.config = { theme: { extend: { colors: { primary: "#004ac6", "primary-fixed": "#dbe1ff", "on-primary": "#ffffff", surface: "#f7f9fb", "on-surface": "#191c1e", "on-surface-variant": "#434655", "surface-container-lowest": "#ffffff", "surface-container-low": "#f2f4f6", "outline-variant": "#c3c6d7", error: "#ba1a1a" }, fontFamily: { display: ["Plus Jakarta Sans", "sans-serif"], body: ["Inter", "sans-serif"] } } } }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        h1, h2, h3, h4, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar-item { transition: all 0.2s ease; }
+        .sidebar-item:hover:not(.active) { background-color: rgba(195, 198, 215, 0.1); }
+        .sidebar-item.active { background-color: #004ac6; color: white; box-shadow: 0 4px 14px 0 rgba(0, 74, 198, 0.25); }
+        .material-icons, .material-icons-round { font-size: 20px; width: 20px; }
+    </style>
+</head>
+<body class="text-on-surface flex h-screen overflow-hidden">
+
+<aside class="w-64 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col justify-between h-full shrink-0 z-20">
+    <div>
+        <div class="h-20 flex items-center px-8 border-b border-outline-variant/10"><a href="#" class="font-display font-bold text-2xl text-primary">CarePulse.</a></div>
+        <div class="px-6 py-6 flex items-center gap-3">
+            <div class="relative"><img src="https://ui-avatars.com/api/?name=Deofajar+Situmorang&background=dbe1ff&color=004ac6" class="w-10 h-10 rounded-full border border-outline-variant/30 object-cover"><div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div></div>
+            <div><h3 class="font-bold text-sm text-on-surface truncate w-32">Deofajar</h3><p class="text-[11px] text-on-surface-variant">ID: CP-9821</p></div>
+        </div>
+        <nav class="px-4 space-y-1 mt-2">
+            <a href="#" class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-on-surface-variant"><span class="material-icons-round">dashboard</span> Dashboard</a>
+            <a href="#" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant"><span class="material-icons">receipt_long</span> Riwayat & Tagihan</a>
+        </nav>
+        <div class="px-4 mt-8"><button class="w-full bg-primary text-white font-bold text-sm py-3 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"><span class="material-icons">add</span> Buat Janji Baru</button></div>
+    </div>
+    <div class="px-4 pb-6 space-y-1">
+        <a href="#pengaturan" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant"><span class="material-icons">settings</span> Pengaturan</a>
+        <a href="index.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant hover:text-error hover:bg-error/5"><span class="material-icons">logout</span> Keluar</a>
+    </div>
+</aside>
+
+<main class="flex-1 overflow-y-auto bg-surface p-8 lg:p-10 scroll-smooth">
+
+    <header class="flex justify-between items-center mb-8">
+        <div><h1 class="font-display text-3xl font-bold text-primary mb-1">Selamat Datang, Deofajar!</h1><p class="text-sm text-on-surface-variant">Pantau jadwal konsultasi dan resep Anda hari ini.</p></div>
+        <div class="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/30 px-4 py-2 rounded-full"><span class="material-icons text-primary" style="font-size:18px;">calendar_today</span><span class="text-sm font-semibold" id="tanggal-hari-ini">3 Jun 2026</span></div>
+    </header>
+
+    <div class="bg-primary rounded-3xl p-8 relative overflow-hidden shadow-lg shadow-primary/10 flex flex-col md:flex-row justify-between items-center mb-8 max-w-4xl">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+        <div class="relative z-10 text-white mb-6 md:mb-0">
+            <div class="inline-flex items-center gap-1 px-3 py-1 bg-white/20 text-[10px] font-bold tracking-widest uppercase rounded-full mb-3 backdrop-blur-sm"><span class="material-icons" style="font-size:12px;">confirmation_number</span> Tiket Hari Ini</div>
+            <h2 class="font-display text-3xl font-bold leading-tight mb-1">Dr. Sarah Wijaya, Sp.PD</h2>
+            <p class="text-white/80 text-sm mb-4">Poli Penyakit Dalam • 09:30 WIB</p>
+            <div class="flex gap-3">
+                <div class="bg-white/10 rounded-xl w-14 h-14 flex items-center justify-center border border-white/20"><span class="font-display text-xl font-bold">A</span></div>
+                <div class="bg-white/10 rounded-xl w-14 h-14 flex items-center justify-center border border-white/20"><span class="font-display text-xl font-bold">1</span></div>
+                <div class="bg-white/10 rounded-xl w-14 h-14 flex items-center justify-center border border-white/20"><span class="font-display text-xl font-bold">2</span></div>
+            </div>
+        </div>
+        <div class="relative z-10 text-right">
+            <button id="btn-checkin" onclick="prosesCheckIn()" class="bg-white text-primary font-bold px-6 py-3 rounded-xl hover:bg-gray-100 transition-colors text-sm shadow-md flex items-center gap-2">
+                <span class="material-icons" style="font-size: 18px;">where_to_vote</span> Check-in Kehadiran
+            </button>
+            <p id="status-checkin" class="text-white/80 text-[11px] mt-2 hidden">Menunggu ACC dari Staf Poli...</p>
+        </div>
+    </div>
+
+    <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm mb-8">
+        <h2 class="font-display text-xl font-bold text-on-surface mb-4">Riwayat & Resep Obat</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="border-b border-outline-variant/20 text-[11px] text-on-surface-variant uppercase tracking-wider">
+                <tr><th class="pb-3">Tanggal</th><th class="pb-3">Dokter</th><th class="pb-3">Diagnosis</th><th class="pb-3 text-center">Resep Obat</th></tr>
+                </thead>
+                <tbody>
+                <tr class="border-b border-outline-variant/10">
+                    <td class="py-3">12 Mei 2026</td>
+                    <td class="py-3 font-semibold">Dr. Sarah Wijaya</td>
+                    <td class="py-3"><span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs">Gastritis Kronis</span></td>
+                    <td class="py-3 text-center">
+                        <button onclick="alert('Resep: Omeprazole 20mg (2x Sehari), Antasida (3x Sehari sesudah makan)')" class="text-primary hover:underline font-medium text-xs flex items-center justify-center gap-1 mx-auto"><span class="material-icons" style="font-size:14px;">medication</span> Lihat Resep</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="pengaturan" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center gap-2 mb-3 text-primary"><span class="material-icons">child_care</span><h3 class="font-bold text-sm">Tambah Akun Anak (< 18 Thn)</h3></div>
+            <form class="space-y-3" onsubmit="event.preventDefault(); alert('Akun anak berhasil ditambahkan dan ditautkan ke akun Anda.');">
+                <input type="text" placeholder="Nama Lengkap Anak" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none" required>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="NIK Anak (KIA)" class="w-2/3 border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none" maxlength="16" required>
+                    <input type="date" title="Tanggal Lahir" class="w-1/3 border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none text-on-surface-variant" required>
+                </div>
+                <button type="submit" class="bg-primary/10 text-primary w-full py-2 rounded-lg font-bold text-xs hover:bg-primary hover:text-white transition">Simpan Profil Anak</button>
+            </form>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center gap-2 mb-3 text-on-surface-variant"><span class="material-icons">lock</span><h3 class="font-bold text-sm">Keamanan Sandi</h3></div>
+            <form class="space-y-3" onsubmit="event.preventDefault(); alert('Sandi berhasil diperbarui!');">
+                <input type="password" placeholder="Sandi Lama" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none" required>
+                <input type="password" placeholder="Sandi Baru" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none" required>
+                <button type="submit" class="border border-outline-variant/50 text-on-surface-variant w-full py-2 rounded-lg font-bold text-xs hover:bg-surface-container-low transition">Ubah Sandi</button>
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    // Simulasi Check-in Pasien
+    function prosesCheckIn() {
+        const btn = document.getElementById('btn-checkin');
+        const status = document.getElementById('status-checkin');
+        btn.innerHTML = `<span class="material-icons" style="font-size: 18px;">hourglass_empty</span> Memproses...`;
+        btn.classList.replace('text-primary', 'text-gray-400');
+
+        setTimeout(() => {
+            btn.style.display = 'none';
+            status.style.display = 'block';
+            status.classList.add('text-yellow-300', 'font-bold');
+        }, 1000);
+    }
+</script>
+</body>
+</html>

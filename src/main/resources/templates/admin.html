@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CarePulse | Administrator Pusat</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <script id="tailwind-config">
+        tailwind.config = { theme: { extend: { colors: { primary: "#004ac6", "primary-fixed": "#dbe1ff", surface: "#f7f9fb", "on-surface": "#191c1e", "on-surface-variant": "#434655", "surface-container-lowest": "#ffffff", "outline-variant": "#c3c6d7", error: "#ba1a1a" }, fontFamily: { display: ["Plus Jakarta Sans", "sans-serif"], body: ["Inter", "sans-serif"] } } } }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* Sidebar Styling */
+        .sidebar-item { transition: all 0.2s ease; cursor: pointer; }
+        .sidebar-item:hover:not(.active) { background-color: rgba(195, 198, 215, 0.1); }
+        .sidebar-item.active { background-color: #004ac6; color: white; box-shadow: 0 4px 14px 0 rgba(0, 74, 198, 0.25); }
+        .sidebar-item.active .material-icons, .sidebar-item.active .material-icons-round { color: white; }
+        .material-icons, .material-icons-round { font-size: 20px; width: 20px; }
+
+        /* SPA View Logic */
+        .spa-view { display: none; opacity: 0; animation: fadeIn 0.3s ease forwards; }
+        .spa-view.active { display: block; }
+
+        /* Modal Pop-up Logic */
+        .modal-overlay { display: none; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 50; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(10px); } }
+
+        /* Badges */
+        .badge-pasien { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .badge-dokter { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-staf { background-color: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+    </style>
+</head>
+<body class="text-on-surface flex h-screen overflow-hidden">
+
+<aside class="w-64 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col justify-between h-full shrink-0 z-20">
+    <div>
+        <div class="h-20 flex items-center px-8 border-b border-outline-variant/10">
+            <a href="#" class="font-display font-bold text-2xl text-primary">CarePulse.</a>
+        </div>
+
+        <div class="px-6 py-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 border border-red-200">
+                <span class="material-icons">admin_panel_settings</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm text-on-surface">Super Admin</h3>
+                <p class="text-[11px] text-on-surface-variant">Pusat Kendali RS</p>
+            </div>
+        </div>
+
+        <nav class="px-4 space-y-1" id="admin-menu">
+            <a onclick="switchView('view-ringkasan', this)" class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-on-surface-variant">
+                <span class="material-icons-round">analytics</span> Ringkasan Sistem
+            </a>
+            <a onclick="switchView('view-akun', this)" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant">
+                <span class="material-icons">manage_accounts</span> Kelola Akun
+            </a>
+            <a onclick="switchView('view-poli', this)" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant">
+                <span class="material-icons">local_hospital</span> Poliklinik & Jadwal
+            </a>
+            <a onclick="switchView('view-artikel', this)" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant">
+                <span class="material-icons">article</span> Kelola Artikel Medis
+            </a>
+        </nav>
+    </div>
+    <div class="px-4 pb-6 space-y-1">
+        <a href="index.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant hover:text-error hover:bg-error/5">
+            <span class="material-icons">logout</span> Keluar Sistem
+        </a>
+    </div>
+</aside>
+
+<main class="flex-1 overflow-y-auto bg-surface p-8 lg:p-10 scroll-smooth relative">
+
+    <header class="flex justify-between items-end mb-8">
+        <div>
+            <h1 id="header-title" class="font-display text-3xl font-bold text-primary mb-1">Dasbor Administrator</h1>
+            <p id="header-desc" class="text-sm text-on-surface-variant">Pantau seluruh data pengguna dan aktivitas rumah sakit.</p>
+        </div>
+        <div class="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/30 px-4 py-2 rounded-full shadow-sm">
+            <span class="material-icons text-primary" style="font-size:18px;">calendar_today</span>
+            <span class="text-sm font-semibold" id="tanggal-hari-ini">Memuat...</span>
+        </div>
+    </header>
+
+    <div id="app-content">
+
+        <div id="view-ringkasan" class="spa-view active">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600"><span class="material-icons">personal_injury</span></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Total Pasien</p><p class="font-display text-2xl font-bold">1,248</p></div>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600"><span class="material-icons">medical_services</span></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Dokter Aktif</p><p class="font-display text-2xl font-bold">45</p></div>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600"><span class="material-icons">support_agent</span></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Staf Poli</p><p class="font-display text-2xl font-bold">12</p></div>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600"><span class="material-icons">receipt_long</span></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Kunjungan Bulan Ini</p><p class="font-display text-2xl font-bold">892</p></div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-8 shadow-sm flex flex-col items-center justify-center h-64">
+                <span class="material-icons text-outline-variant mb-2" style="font-size: 40px;">bar_chart</span>
+                <p class="text-on-surface-variant font-medium">Area Integrasi Grafik Kunjungan (Chart.js)</p>
+            </div>
+        </div>
+
+        <div id="view-akun" class="spa-view">
+            <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm mb-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                        <div class="flex bg-surface border border-outline-variant/30 rounded-xl p-1">
+                            <button class="px-4 py-1.5 text-xs font-bold bg-white shadow-sm rounded-lg text-primary">Semua</button>
+                            <button class="px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary">Pasien</button>
+                            <button class="px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary">Staf RS</button>
+                        </div>
+                        <button onclick="toggleModal('modal-tambah-akun')" class="bg-primary text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-primary/90 flex items-center gap-1">
+                            <span class="material-icons" style="font-size: 16px;">person_add</span> Buat Akun RS
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative w-full mb-4">
+                    <span class="material-icons absolute left-3 top-2.5 text-on-surface-variant" style="font-size: 20px;">search</span>
+                    <input type="text" placeholder="Cari nama, email, atau ID Pengguna..." class="w-full bg-surface border border-outline-variant/30 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary transition-colors">
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="border-b border-outline-variant/30 text-[11px] text-on-surface-variant uppercase tracking-wider bg-surface/50">
+                        <tr>
+                            <th class="py-3 px-4 rounded-tl-xl">Pengguna</th>
+                            <th class="py-3 px-4">Peran</th>
+                            <th class="py-3 px-4">Detail</th>
+                            <th class="py-3 px-4">Status Akun</th>
+                            <th class="py-3 px-4 text-center rounded-tr-xl">Aksi</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/10">
+                        <tr class="hover:bg-surface/50 transition-colors">
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=Sarah+Wijaya&background=004ac6&color=fff" class="w-9 h-9 rounded-full">
+                                    <div><p class="font-bold text-on-surface">Dr. Sarah Wijaya</p><p class="text-[11px] text-on-surface-variant">sarah.w@klinik.com</p></div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4"><span class="badge-dokter px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center w-max gap-1"><span class="material-icons" style="font-size: 12px;">medical_services</span> Dokter</span></td>
+                            <td class="py-3 px-4"><p class="text-xs font-semibold">Penyakit Dalam</p></td>
+                            <td class="py-3 px-4"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-green-500"></div><span class="text-xs font-semibold text-green-700">Aktif</span></div></td>
+                            <td class="py-3 px-4 text-center">
+                                <button class="text-primary hover:bg-primary-fixed p-1.5 rounded transition"><span class="material-icons" style="font-size: 18px;">edit</span></button>
+                                <button class="text-error hover:bg-red-50 p-1.5 rounded transition"><span class="material-icons" style="font-size: 18px;">block</span></button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface/50 transition-colors">
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=Deofajar+Situmorang&background=dbe1ff&color=004ac6" class="w-9 h-9 rounded-full">
+                                    <div><p class="font-bold text-on-surface">Deofajar Situmorang</p><p class="text-[11px] text-on-surface-variant">deofajar@email.com</p></div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4"><span class="badge-pasien px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center w-max gap-1"><span class="material-icons" style="font-size: 12px;">personal_injury</span> Pasien</span></td>
+                            <td class="py-3 px-4"><p class="text-xs font-semibold">CP-9821</p></td>
+                            <td class="py-3 px-4"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-green-500"></div><span class="text-xs font-semibold text-green-700">Aktif</span></div></td>
+                            <td class="py-3 px-4 text-center">
+                                <button class="text-primary hover:bg-primary-fixed p-1.5 rounded transition"><span class="material-icons" style="font-size: 18px;">edit</span></button>
+                                <button class="text-error hover:bg-red-50 p-1.5 rounded transition"><span class="material-icons" style="font-size: 18px;">block</span></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-poli" class="spa-view">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm h-max">
+                    <h2 class="font-display text-lg font-bold text-on-surface mb-4">Daftarkan Poli Baru</h2>
+                    <form class="space-y-4" onsubmit="event.preventDefault(); alert('Poliklinik berhasil ditambahkan!');">
+                        <div>
+                            <label class="text-[10px] font-bold text-on-surface-variant uppercase">Nama Poli</label>
+                            <input type="text" placeholder="Misal: Poli Anak" class="w-full border border-outline-variant/50 p-2 text-sm rounded-lg bg-surface focus:border-primary outline-none" required>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-on-surface-variant uppercase">Kepala Poli (Dokter)</label>
+                            <select class="w-full border border-outline-variant/50 p-2 text-sm rounded-lg bg-surface focus:border-primary outline-none">
+                                <option>Dr. Sarah Wijaya</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-primary text-white font-bold py-2.5 rounded-xl hover:bg-primary/90 transition shadow-sm">Simpan Poliklinik</button>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm">
+                    <h2 class="font-display text-lg font-bold text-on-surface mb-4">Daftar Poliklinik Beroperasi</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="border border-outline-variant/50 rounded-2xl p-4 flex items-center justify-between hover:border-primary transition">
+                            <div><h3 class="font-bold text-primary">Penyakit Dalam</h3><p class="text-xs text-on-surface-variant">Kepala: Dr. Sarah W.</p></div>
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">Aktif</span>
+                        </div>
+                        <div class="border border-outline-variant/50 rounded-2xl p-4 flex items-center justify-between hover:border-primary transition">
+                            <div><h3 class="font-bold text-primary">Klinik Anak</h3><p class="text-xs text-on-surface-variant">Kepala: Dr. Budi A.</p></div>
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">Aktif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-artikel" class="spa-view">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4 text-on-surface">
+                        <span class="material-icons text-primary">edit_document</span>
+                        <h2 class="font-display text-lg font-bold">Publikasi Artikel Baru</h2>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mb-4">Artikel yang dipublikasi di sini akan langsung muncul di Halaman Landing Page (Beranda Publik).</p>
+
+                    <form id="formAddArtikel" class="space-y-4" onsubmit="event.preventDefault(); alert('Siap ditangkap oleh Integration Engineer (JS)!');">
+                        <div>
+                            <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Judul Artikel</label>
+                            <input type="text" id="artikel-judul" placeholder="Cara Menjaga Gula Darah..." class="w-full border border-outline-variant/50 p-2.5 text-sm rounded-lg bg-surface focus:border-primary outline-none" required>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Gambar / Cover Artikel</label>
+                            <div id="dropzone-gambar" class="border-2 border-dashed border-outline-variant/50 rounded-xl p-6 flex flex-col items-center justify-center bg-surface hover:bg-primary-fixed/30 transition cursor-pointer">
+                                <span class="material-icons text-on-surface-variant mb-2" style="font-size: 32px;">cloud_upload</span>
+                                <p class="text-sm font-bold text-primary mb-1">Klik untuk unggah gambar</p>
+                                <p class="text-[10px] text-on-surface-variant">Format didukung: JPG, PNG (Maks 2MB)</p>
+                                <input type="file" id="artikel-gambar" accept="image/*" class="hidden">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Isi Konten (Deskripsi Panjang)</label>
+                            <textarea id="artikel-konten" rows="5" placeholder="Tulis edukasi medis di sini..." class="w-full border border-outline-variant/50 p-2.5 text-sm rounded-lg bg-surface focus:border-primary outline-none" required></textarea>
+                        </div>
+                        <button type="submit" id="btn-simpan-artikel" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition shadow-sm flex items-center justify-center gap-2">
+                            <span class="material-icons" style="font-size: 18px;">publish</span> Publikasikan ke Publik
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm">
+                    <h2 class="font-display text-lg font-bold text-on-surface mb-4">Artikel Terpublikasi</h2>
+                    <div class="space-y-3">
+                        <div class="border border-outline-variant/30 rounded-xl p-4 flex justify-between items-center hover:bg-surface transition">
+                            <div class="w-3/4">
+                                <h3 class="font-bold text-sm text-on-surface truncate">Mengenal Gejala Awal Asam Lambung</h3>
+                                <p class="text-[10px] text-on-surface-variant mt-1">Oleh: Admin Pusat • 12 Mei 2026</p>
+                            </div>
+                            <button class="text-error hover:bg-red-50 p-2 rounded transition"><span class="material-icons" style="font-size: 18px;">delete</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div id="modal-tambah-akun" class="modal-overlay fixed inset-0 items-center justify-center">
+    <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl relative">
+        <button onclick="toggleModal('modal-tambah-akun')" class="absolute top-4 right-4 text-on-surface-variant hover:text-error transition"><span class="material-icons">close</span></button>
+
+        <div class="flex items-center gap-3 mb-2">
+            <span class="material-icons text-primary" style="font-size: 28px;">badge</span>
+            <h2 class="font-display text-2xl font-bold text-on-surface">Buat Akun Internal</h2>
+        </div>
+        <p class="text-xs text-on-surface-variant mb-6">Daftarkan Dokter atau Staf Poli baru ke sistem CarePulse.</p>
+
+        <form id="form-tambah-internal" class="space-y-4" onsubmit="event.preventDefault(); alert('Siap ditangkap oleh Integration Engineer (JS Backend)!'); toggleModal('modal-tambah-akun');">
+            <div>
+                <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Tipe Akun (Peran)</label>
+                <select id="input-role" class="w-full border border-outline-variant/50 p-2.5 text-sm rounded-xl bg-surface focus:border-primary outline-none">
+                    <option value="DOKTER">Dokter Spesialis</option>
+                    <option value="STAF">Staf Poliklinik</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Nama Lengkap & Gelar</label>
+                <input type="text" id="input-nama" placeholder="Misal: Dr. Budi Santoso, Sp.A" class="w-full border border-outline-variant/50 p-2.5 text-sm rounded-xl bg-surface focus:border-primary outline-none" required>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Email Resmi (Login)</label>
+                <input type="email" id="input-email" placeholder="budi@klinik.com" class="w-full border border-outline-variant/50 p-2.5 text-sm rounded-xl bg-surface focus:border-primary outline-none" required>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Kata Sandi Awal</label>
+                <input type="password" id="input-sandi" placeholder="Minimal 6 karakter" class="w-full border border-outline-variant/50 p-2.5 text-sm rounded-xl bg-surface focus:border-primary outline-none" required>
+            </div>
+
+            <button type="submit" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-opacity-90 transition mt-2 flex items-center justify-center gap-2">
+                <span class="material-icons" style="font-size: 18px;">save</span> Simpan & Aktifkan Akun
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Fungsi Set Tanggal
+    document.getElementById('tanggal-hari-ini').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    // Fungsi Ajaib SPA: Berpindah View
+    function switchView(targetViewId, clickedElement) {
+        // Sembunyikan semua konten
+        document.querySelectorAll('.spa-view').forEach(view => view.classList.remove('active'));
+        // Munculkan konten yang dituju
+        document.getElementById(targetViewId).classList.add('active');
+
+        // Matikan warna biru di semua menu sidebar
+        document.querySelectorAll('#admin-menu .sidebar-item').forEach(item => item.classList.remove('active'));
+        // Nyalakan warna biru pada menu yang sedang di-klik
+        clickedElement.classList.add('active');
+
+        // Ubah Judul Header Dinamis
+        const judulHeader = document.getElementById('header-title');
+        const deskripsiHeader = document.getElementById('header-desc');
+
+        if (targetViewId === 'view-ringkasan') {
+            judulHeader.innerText = "Dasbor Administrator"; deskripsiHeader.innerText = "Pantau seluruh data pengguna dan aktivitas rumah sakit.";
+        } else if (targetViewId === 'view-akun') {
+            judulHeader.innerText = "Manajemen Akun RS"; deskripsiHeader.innerText = "Kelola data hak akses staf, dokter, dan pasien.";
+        } else if (targetViewId === 'view-poli') {
+            judulHeader.innerText = "Operasional Poliklinik"; deskripsiHeader.innerText = "Atur jadwal kerja dokter dan tambah fasilitas poli.";
+        } else if (targetViewId === 'view-artikel') {
+            judulHeader.innerText = "Portal Edukasi Medis"; deskripsiHeader.innerText = "Kelola artikel yang akan tayang di Halaman Publik.";
+        }
+    }
+
+    // Fungsi Menampilkan/Menyembunyikan Modal Tambah Akun
+    function toggleModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.toggle('active');
+    }
+
+    // Trik agar area upload gambar bisa di-klik untuk membuka file manager komputer
+    document.getElementById('dropzone-gambar').addEventListener('click', () => {
+        document.getElementById('artikel-gambar').click();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CarePulse | Panel Dokter</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <script id="tailwind-config">
+        tailwind.config = { theme: { extend: { colors: { primary: "#004ac6", "primary-fixed": "#dbe1ff", surface: "#f7f9fb", "on-surface": "#191c1e", "on-surface-variant": "#434655", "surface-container-lowest": "#ffffff", "outline-variant": "#c3c6d7", error: "#ba1a1a" }, fontFamily: { display: ["Plus Jakarta Sans", "sans-serif"], body: ["Inter", "sans-serif"] } } } }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar-item { transition: all 0.2s ease; }
+        .sidebar-item:hover:not(.active) { background-color: rgba(195, 198, 215, 0.1); }
+        .sidebar-item.active { background-color: #004ac6; color: white; box-shadow: 0 4px 14px 0 rgba(0, 74, 198, 0.25); }
+        .material-icons, .material-icons-round { font-size: 20px; width: 20px; }
+    </style>
+</head>
+<body class="text-on-surface flex h-screen overflow-hidden">
+
+<aside class="w-64 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col justify-between h-full shrink-0 z-20">
+    <div>
+        <div class="h-20 flex items-center px-8 border-b border-outline-variant/10"><a href="#" class="font-display font-bold text-2xl text-primary">CarePulse.</a></div>
+        <div class="px-6 py-6 flex items-center gap-3">
+            <img src="https://ui-avatars.com/api/?name=Sarah+Wijaya&background=004ac6&color=fff" class="w-10 h-10 rounded-full object-cover">
+            <div><h3 class="font-bold text-sm text-on-surface">Dr. Sarah W.</h3><p class="text-[11px] text-on-surface-variant">Poli Penyakit Dalam</p></div>
+        </div>
+        <nav class="px-4 space-y-1">
+            <a href="#" class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-on-surface-variant"><span class="material-icons-round">people</span> Pasien Hari Ini</a>
+            <a href="#manajemen-jadwal" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant"><span class="material-icons">calendar_month</span> Kelola Jadwal</a>
+        </nav>
+    </div>
+    <div class="px-4 pb-6 space-y-1">
+        <a href="index.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-on-surface-variant hover:text-error hover:bg-error/5"><span class="material-icons">logout</span> Keluar Sistem</a>
+    </div>
+</aside>
+
+<main class="flex-1 overflow-y-auto bg-surface p-8 lg:p-10 scroll-smooth">
+
+    <header class="mb-8">
+        <h1 class="font-display text-3xl font-bold text-primary mb-1">Ruang Praktik Digital</h1>
+        <p class="text-sm text-on-surface-variant">Kelola pemeriksaan pasien dan terbitkan resep elektronik.</p>
+    </header>
+
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col">
+            <div class="flex items-center gap-2 mb-4 text-on-surface"><span class="material-icons text-green-600">how_to_reg</span><h2 class="font-display text-lg font-bold">Pasien Siap Diperiksa</h2></div>
+            <div class="space-y-3 flex-1">
+                <div id="card-pasien-1" class="border border-outline-variant/30 rounded-xl p-4 flex justify-between items-center hover:border-primary transition-colors">
+                    <div>
+                        <p class="font-bold text-sm">Deofajar Situmorang</p>
+                        <p class="text-[11px] text-on-surface-variant">No. Antrean: A12 • Umur 20 Thn</p>
+                    </div>
+                    <button onclick="bukaFormPeriksa('Deofajar Situmorang', 'A12')" class="bg-primary/10 text-primary font-bold text-xs px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition">Panggil & Periksa</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
+            <h2 class="font-display text-lg font-bold text-on-surface mb-1">Rekam Medis & Resep</h2>
+            <p id="nama-pasien-aktif" class="text-xs text-on-surface-variant mb-4 border-b border-outline-variant/20 pb-3">Pilih pasien di samping untuk memulai.</p>
+
+            <form id="form-periksa" class="space-y-3 opacity-50 pointer-events-none" onsubmit="selesaikanPemeriksaan(event)">
+                <div>
+                    <label class="text-[10px] font-bold text-on-surface-variant uppercase">Diagnosis Penyakit</label>
+                    <input type="text" id="input-diagnosis" placeholder="Contoh: Infeksi Saluran Pernapasan" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none" required>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-on-surface-variant uppercase">Resep Obat (Tulis Lengkap)</label>
+                    <textarea id="input-resep" rows="3" placeholder="Contoh: Paracetamol 500mg 3x1 setelah makan" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none" required></textarea>
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white font-bold text-xs py-2.5 rounded-lg hover:bg-green-700 transition shadow-sm mt-2 flex items-center justify-center gap-2">
+                    <span class="material-icons" style="font-size:16px;">check_circle</span> Selesai & Terbitkan Resep
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="manajemen-jadwal" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2 text-on-surface"><span class="material-icons">event_note</span><h3 class="font-bold text-sm">Manajemen Jadwal</h3></div>
+                <button onclick="alert('Permintaan jadwal berhasil dikirim ke Admin Pusat.')" class="text-xs text-primary font-bold hover:underline">Request Jadwal Baru</button>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center bg-surface border border-outline-variant/30 p-3 rounded-lg">
+                    <div><p class="text-xs font-bold">Senin, 09:00 - 14:00</p><p class="text-[10px] text-green-600 font-bold">Aktif (Disetujui)</p></div>
+                    <button onclick="if(confirm('Batalkan jadwal ini?')) this.parentElement.style.display='none'" class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded font-bold hover:bg-red-200">Batalkan / Tolak</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col justify-center">
+            <div class="flex items-center gap-2 mb-3 text-on-surface-variant"><span class="material-icons">lock</span><h3 class="font-bold text-sm">Ubah Sandi Dokter</h3></div>
+            <form class="space-y-3" onsubmit="event.preventDefault(); alert('Sandi berhasil diperbarui!');">
+                <input type="password" placeholder="Sandi Baru" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface focus:border-primary outline-none" required>
+                <button type="submit" class="border border-outline-variant/50 text-on-surface-variant w-full py-2 rounded-lg font-bold text-xs hover:bg-surface-container-low transition">Simpan Sandi</button>
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    // Logika sederhana untuk demonstrasi Form Rekam Medis
+    function bukaFormPeriksa(nama, antrean) {
+        document.getElementById('nama-pasien-aktif').innerHTML = `Memeriksa: <strong class="text-primary">${nama} (${antrean})</strong>`;
+        const form = document.getElementById('form-periksa');
+        form.classList.remove('opacity-50', 'pointer-events-none'); // Aktifkan form
+        document.getElementById('input-diagnosis').focus();
+    }
+
+    function selesaikanPemeriksaan(e) {
+        e.preventDefault();
+        // Ambil data
+        const diag = document.getElementById('input-diagnosis').value;
+        const resep = document.getElementById('input-resep').value;
+
+        alert(`Pemeriksaan Selesai!\nDiagnosis: ${diag}\nResep Obat akan langsung masuk ke Dasbor Pasien.`);
+
+        // Bersihkan dan matikan form lagi
+        e.target.reset();
+        e.target.classList.add('opacity-50', 'pointer-events-none');
+        document.getElementById('nama-pasien-aktif').innerText = "Pilih pasien di samping untuk memulai.";
+
+        // Hapus pasien dari antrean UI
+        document.getElementById('card-pasien-1').style.display = 'none';
+    }
+</script>
+</body>
+</html>
