@@ -13,11 +13,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Menonaktifkan CSRF untuk kelancaran fetch REST API JSON
+            .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.html", "/static/**", "/css/**", "/js/**", "/*.js", "/*.css").permitAll()
-                .requestMatchers("/api/auth/**", "/api/pasien/**", "/api/dokter/**", "/api/admin/**").permitAll()
+                // Izinkan semua file statis di root folder static
+                .requestMatchers("/", "/index.html", "/*.js", "/*.css", "/static/**", "/css/**", "/js/**").permitAll()
+                // Izinkan semua jalur API backend komunikasi JSON
+                .requestMatchers("/api/**", "/api/auth/**", "/api/pasien/**", "/api/dokter/**").permitAll()
                 .anyRequest().permitAll()
             );
         return http.build();
