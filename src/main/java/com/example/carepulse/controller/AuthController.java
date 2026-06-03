@@ -17,18 +17,20 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         User user = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+        
         if (user != null) {
             LoginResponse response = new LoginResponse();
             response.setStatus("success");
-            response.setMessage("Login berhasil");
+            response.setMessage("Autentikasi Berhasil");
             response.setRole(user.getRole().toString().toLowerCase());
             response.setUserId(user.getId());
             response.setName(user.getNama());
             return ResponseEntity.ok(response);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new LoginResponse("error", "Email atau password salah", null, null, null));
+        
+        LoginResponse errorResponse = new LoginResponse("error", "Kombinasi Email atau Password salah", null, null, null);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 }
