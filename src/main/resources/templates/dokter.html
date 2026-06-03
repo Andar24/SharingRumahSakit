@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
         tailwind.config = {
@@ -26,19 +25,7 @@
             }
         }
     </script>
-
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; overflow-x: hidden; }
-        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-nav { background: rgba(247, 249, 251, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(195, 198, 215, 0.3); }
-        .hero-gradient { background: radial-gradient(circle at top right, rgba(0, 74, 198, 0.05), transparent 60%); }
-        .bento-card { background: #ffffff; border: 1px solid rgba(195, 198, 215, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; cursor: pointer; }
-        .bento-card:hover { border-color: rgba(0, 74, 198, 0.4); box-shadow: 0 10px 25px -5px rgba(0, 74, 198, 0.05); transform: translateY(-3px); }
-        .material-icons { font-size: 24px; overflow: hidden; white-space: nowrap; user-select: none; }
-        .spa-view { display: none; opacity: 0; animation: fadeIn 0.4s ease forwards; }
-        .spa-view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    <link href="/style.css" rel="stylesheet">
 </head>
 <body class="text-on-surface flex h-screen overflow-hidden">
 
@@ -60,7 +47,6 @@
 </aside>
 
 <main class="flex-1 overflow-y-auto bg-surface p-8 lg:p-10 scroll-smooth">
-
     <header class="mb-8">
         <h1 class="font-display text-3xl font-bold text-primary mb-1">Ruang Praktik Digital</h1>
         <p class="text-sm text-on-surface-variant">Kelola pemeriksaan pasien dan terbitkan resep elektronik.</p>
@@ -83,7 +69,6 @@
         <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
             <h2 class="font-display text-lg font-bold text-on-surface mb-1">Rekam Medis & Resep</h2>
             <p id="nama-pasien-aktif" class="text-xs text-on-surface-variant mb-4 border-b border-outline-variant/20 pb-3">Pilih pasien di samping untuk memulai.</p>
-
             <form id="form-periksa" class="space-y-3 opacity-50 pointer-events-none" onsubmit="selesaikanPemeriksaan(event)">
                 <div>
                     <label class="text-[10px] font-bold text-on-surface-variant uppercase">Diagnosis Penyakit</label>
@@ -113,7 +98,6 @@
                 </div>
             </div>
         </div>
-
         <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col justify-center">
             <div class="flex items-center gap-2 mb-3 text-on-surface-variant"><span class="material-icons">lock</span><h3 class="font-bold text-sm">Ubah Sandi Dokter</h3></div>
             <form class="space-y-3" onsubmit="event.preventDefault(); alert('Sandi berhasil diperbarui!');">
@@ -122,7 +106,6 @@
             </form>
         </div>
     </div>
-
 </main>
 
 <script type="module" src="/js/main.js"></script>

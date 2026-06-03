@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
         tailwind.config = {
@@ -26,19 +25,7 @@
             }
         }
     </script>
-
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; overflow-x: hidden; }
-        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-nav { background: rgba(247, 249, 251, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(195, 198, 215, 0.3); }
-        .hero-gradient { background: radial-gradient(circle at top right, rgba(0, 74, 198, 0.05), transparent 60%); }
-        .bento-card { background: #ffffff; border: 1px solid rgba(195, 198, 215, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; cursor: pointer; }
-        .bento-card:hover { border-color: rgba(0, 74, 198, 0.4); box-shadow: 0 10px 25px -5px rgba(0, 74, 198, 0.05); transform: translateY(-3px); }
-        .material-icons { font-size: 24px; overflow: hidden; white-space: nowrap; user-select: none; }
-        .spa-view { display: none; opacity: 0; animation: fadeIn 0.4s ease forwards; }
-        .spa-view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    <link href="/style.css" rel="stylesheet">
 </head>
 <body class="text-on-surface flex flex-col min-h-screen selection:bg-primary-fixed selection:text-primary">
 
@@ -62,12 +49,9 @@
 </header>
 
 <main id="app-content" class="flex-grow">
-
     <div id="view-beranda" class="spa-view active">
-
         <section class="hero-gradient relative pt-20 pb-24 px-6 md:px-12 overflow-hidden flex items-center">
             <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
                 <div class="space-y-8 z-10 text-center lg:text-left">
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary-fixed text-primary rounded-full text-xs font-bold tracking-wide border border-primary/20">
                         <span class="material-icons" style="font-size: 16px;">verified</span> Terintegrasi Rekam Medis Digital
@@ -79,14 +63,12 @@
                     <p class="text-lg text-on-surface-variant leading-relaxed max-w-xl mx-auto lg:mx-0">
                         Hindari antrean panjang. Atur jadwal konsultasi poliklinik dan akses riwayat kesehatan Anda dalam satu platform yang aman.
                     </p>
-
                     <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
                         <button onclick="showView('view-layanan')" class="bg-primary text-white px-8 py-4 rounded-2xl font-bold text-sm hover:bg-opacity-90 transition shadow-lg shadow-primary/20 flex items-center gap-2">
                             <span class="material-icons" style="font-size: 18px;">calendar_month</span> Buat Janji Dokter
                         </button>
                     </div>
                 </div>
-
                 <div class="relative z-10 hidden lg:block">
                     <div class="absolute inset-0 bg-primary/5 rounded-[3rem] transform rotate-3 scale-105 -z-10"></div>
                     <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1000" alt="Tim Medis" class="rounded-[2.5rem] shadow-2xl object-cover h-[500px] w-full border-8 border-white"/>
@@ -125,7 +107,6 @@
                     <h2 class="font-display text-3xl font-bold text-on-surface mb-2">Bacaan Kesehatan Terbaru</h2>
                     <p class="text-on-surface-variant">Artikel kredibel langsung dari tim medis CarePulse.</p>
                 </div>
-
                 <div id="artikel-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="col-span-3 text-center py-16 bg-surface border border-outline-variant/30 rounded-3xl">
                         <span class="material-icons text-outline-variant mb-2 animate-spin" style="font-size: 32px;">sync</span>
@@ -142,7 +123,6 @@
                 <h2 class="font-display text-4xl font-bold text-on-surface mb-4">Layanan Poliklinik</h2>
                 <p class="text-on-surface-variant text-lg">Silakan login untuk mulai mengambil nomor antrean.</p>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-white border border-outline-variant/30 rounded-3xl overflow-hidden hover:shadow-lg transition">
                     <div class="h-32 bg-primary-fixed flex items-center justify-center text-primary"><span class="material-icons" style="font-size: 56px;">pulmonology</span></div>
@@ -181,7 +161,6 @@
                     <h2 class="font-display text-3xl font-bold text-on-surface mb-1">Masuk Sistem</h2>
                     <p class="text-on-surface-variant text-sm">Pasien, Dokter, atau Staf RS.</p>
                 </div>
-
                 <form id="loginFormAPI" class="space-y-5">
                     <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5 uppercase tracking-wide ml-1">Email Terdaftar</label>
@@ -197,7 +176,6 @@
                         Masuk <span class="material-icons" style="font-size: 18px;">login</span>
                     </button>
                 </form>
-
                 <div class="mt-8 text-center text-sm text-on-surface-variant border-t border-outline-variant/20 pt-6">
                     Belum terdaftar di CarePulse? <br>
                     <button onclick="toggleAuth('register')" class="font-bold text-primary hover:underline mt-2">Daftar Pasien Baru</button>
@@ -209,12 +187,10 @@
                     <h2 class="font-display text-2xl font-bold text-on-surface mb-1">Pendaftaran Pasien</h2>
                     <p class="text-on-surface-variant text-xs">Data dienkripsi standar Kemenkes.</p>
                 </div>
-
                 <form id="registerFormAPI" class="space-y-4">
                     <input type="text" id="reg-name" class="w-full bg-surface border border-outline-variant/50 rounded-xl p-3 text-sm outline-none focus:border-primary" placeholder="Nama Lengkap Sesuai KTP" required>
                     <input type="text" id="reg-nik" class="w-full bg-surface border border-outline-variant/50 rounded-xl p-3 text-sm outline-none focus:border-primary" placeholder="Nomor Induk Kependudukan (16 Digit)" maxlength="16" required>
                     <input type="email" id="reg-email" class="w-full bg-surface border border-outline-variant/50 rounded-xl p-3 text-sm outline-none focus:border-primary" placeholder="Email Aktif" required>
-
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="text-[10px] font-bold text-on-surface-variant mb-1 block ml-1">TANGGAL LAHIR</label>
@@ -227,14 +203,11 @@
                             </select>
                         </div>
                     </div>
-
                     <input type="password" id="reg-password" class="w-full bg-surface border border-outline-variant/50 rounded-xl p-3 text-sm outline-none focus:border-primary" placeholder="Buat Kata Sandi" required>
-
                     <button type="submit" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-opacity-90 shadow-lg shadow-primary/20 transition mt-4">
                         Buat Akun Saya
                     </button>
                 </form>
-
                 <div class="mt-6 text-center text-sm text-on-surface-variant border-t border-outline-variant/20 pt-4">
                     Sudah punya akun? <button onclick="toggleAuth('login')" class="font-bold text-primary hover:underline">Masuk di sini</button>
                 </div>
@@ -242,7 +215,6 @@
 
         </div>
     </div>
-
 </main>
 
 <footer class="bg-white border-t border-outline-variant/20 py-8 mt-auto">

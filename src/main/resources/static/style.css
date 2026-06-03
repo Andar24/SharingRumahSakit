@@ -1,24 +1,26 @@
-/* GLOBAL RESET & FONTS */
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-body { background-color: #f7f9fb; overflow-x: hidden; color: #191c1e; }
-
-/* SPA (SINGLE PAGE APPLICATION) ANIMATIONS */
-.spa-page { display: none; animation: fadeIn 0.3s ease-out forwards; min-height: 100vh; width: 100vw; }
-.spa-page.active { display: block; }
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* CUSTOM SCROLLBAR (Tampilan Elegan ala Aplikasi JKN) */
+/* GLOBAL RESET & SCROLLBAR */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: #f1f5f9; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* GLASSMORPHISM CARD UTILITY */
-.glass-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(226, 232, 240, 0.5);
+/* FONTS & BASE */
+body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; overflow-x: hidden; color: #191c1e; }
+.font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+.material-icons { font-size: 24px; overflow: hidden; white-space: nowrap; user-select: none; }
+
+/* UI COMPONENTS & GLASSMORPHISM */
+.glass-nav { background: rgba(247, 249, 251, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(195, 198, 215, 0.3); }
+.hero-gradient { background: radial-gradient(circle at top right, rgba(0, 74, 198, 0.05), transparent 60%); }
+.bento-card { background: #ffffff; border: 1px solid rgba(195, 198, 215, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; cursor: pointer; }
+.bento-card:hover { border-color: rgba(0, 74, 198, 0.4); box-shadow: 0 10px 25px -5px rgba(0, 74, 198, 0.05); transform: translateY(-3px); }
+.glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.5); }
+
+/* SPA (SINGLE PAGE APPLICATION) ANIMATIONS */
+.spa-view { display: none; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+.spa-view.active { display: block; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
