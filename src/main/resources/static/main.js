@@ -2,6 +2,9 @@ import { router } from './router.js';
 import { auth } from './auth.js';
 import { uiManager } from './ui.js';
 
+// MENGIMPOR LOGIKA KERJA YANG BARU DIBUAT
+import './app-logic.js'; 
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Inisialisasi Navigasi dan Auth
     router.init();
@@ -15,23 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. JEMBATAN UNTUK ATRIBUT HTML: onclick="switchView(...)"
     window.switchView = function(targetViewId, clickedElement) {
-        // Sembunyikan semua konten spa-view
         document.querySelectorAll('.spa-view').forEach(view => {
             view.classList.remove('active');
-            view.classList.add('hidden'); // Memastikan display:none via Tailwind jika dipakai
+            view.classList.add('hidden');
         });
 
-        // Munculkan konten yang dituju
         const targetView = document.getElementById(targetViewId);
         if (targetView) {
             targetView.classList.add('active');
             targetView.classList.remove('hidden');
         }
 
-        // Matikan warna aktif di semua menu sidebar (untuk halaman admin/pasien/dll)
         document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-
-        // Nyalakan warna aktif pada menu yang diklik
         if(clickedElement) clickedElement.classList.add('active');
     };
 
