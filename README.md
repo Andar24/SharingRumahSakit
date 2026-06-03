@@ -1,6 +1,7 @@
 CarePulse adalah aplikasi web manajemen rumah sakit (Monolithic Architecture) yang menghubungkan Pasien, Dokter, Staf, dan Admin dalam satu platform terpadu. Dibangun menggunakan Java Spring Boot (Backend) dan Tailwind CSS + Vanilla JS (Frontend) untuk mendigitalkan alur pelayanan medis secara real-time.
 
 🔄 Alur Kerja Ringkas
+
 Pasien: Membuat akun, memilih jadwal poli, mendapat tiket antrean, dan melihat rekam medis.
 
 Staf Poli: Memantau daftar booking harian dan memvalidasi kehadiran fisik pasien.
