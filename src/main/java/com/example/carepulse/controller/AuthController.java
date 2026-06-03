@@ -2,12 +2,12 @@ package com.example.carepulse.controller;
 
 import com.example.carepulse.dto.LoginRequest;
 import com.example.carepulse.dto.LoginResponse;
-import com.example.carepulse.model.User;
 import com.example.carepulse.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,20 +17,15 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        User user = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-        
-        if (user != null) {
-            LoginResponse response = new LoginResponse();
-            response.setStatus("success");
-            response.setMessage("Autentikasi Berhasil");
-            response.setRole(user.getRole().toString().toLowerCase());
-            response.setUserId(user.getId());
-            response.setName(user.getNama());
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            // Memanggil metode yang BENAR sesuai dengan yang ada di AuthService
+            LoginResponse response = authService.prosesLogin(loginRequest);
             return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            // Menangkap error jika email/password salah
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", e.getMessage()));
         }
-        
-        LoginResponse errorResponse = new LoginResponse("error", "Kombinasi Email atau Password salah", null, null, null);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 }
