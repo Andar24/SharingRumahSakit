@@ -1,36 +1,38 @@
-const BASE_URL = '/api';
+// Menggunakan URL dinamis berbasis lokasi domain browser aktif
+const BASE_URL = `${window.location.origin}/api`;
 
-export const apiClient = {
-    // Fungsi untuk menyisipkan header (termasuk token keamanan jika nanti ada)
-    getHeaders() {
-        const token = sessionStorage.getItem('authToken'); // Persiapan untuk JWT Backend
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-        return headers;
-    },
-
+const ApiService = {
     async post(endpoint, data) {
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            method: 'POST',
-            headers: this.getHeaders(),
-            body: JSON.stringify(data)
-        });
-        return this.handleResponse(response);
+        try {
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        } catch (error) {
+            console.error(`API Post Error pada ${endpoint}:`, error);
+            return { status: 'error', message: 'Gagal terhubung ke server database.' };
+        }
     },
 
     async get(endpoint) {
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            method: 'GET',
-            headers: this.getHeaders()
-        });
-        return this.handleResponse(response);
-    },
-
-    async handleResponse(response) {
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.message || 'Terjadi kesalahan pada peladen.');
+        try {
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error(`API Get Error pada ${endpoint}:`, error);
+            return null;
         }
-        return result;
     }
 };
+
+window.ApiService = ApiService;
