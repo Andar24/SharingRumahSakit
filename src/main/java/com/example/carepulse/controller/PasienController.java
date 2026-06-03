@@ -2,7 +2,7 @@ package com.example.carepulse.controller;
 
 import com.example.carepulse.model.*;
 import com.example.carepulse.repository.*;
-import com.example.carepulse.service.JanjiTemuService; // IMPORT SERVICE BARU ANDA
+import com.example.carepulse.service.JanjiTemuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,15 +18,31 @@ public class PasienController {
     @Autowired private PoliklinikRepository poliklinikRepository;
     @Autowired private JadwalPraktikRepository jadwalPraktikRepository;
     @Autowired private JanjiTemuRepository janjiTemuRepository;
-
-    // Panggil Service yang baru dibuat
     @Autowired private JanjiTemuService janjiTemuService;
 
-    // ... (Fungsi GET Poli dan Jadwal biarkan tetap ada) ...
+    // FITUR BARU 1: Mengambil daftar poliklinik untuk frontend
+    @GetMapping("/list-poli")
+    public ResponseEntity<?> getDaftarPoli() {
+        return ResponseEntity.ok(poliklinikRepository.findAll());
+    }
 
-    // ==========================================
-    // API Buat Janji Temu (Booking) - VERSI CLEAN
-    // ==========================================
+    // FITUR BARU 2: Mengambil jadwal dokter berdasarkan poli yang dipilih
+    @GetMapping("/jadwal-dokter/{poliId}")
+    public ResponseEntity<?> getJadwalByPoli(@PathVariable Long poliId) {
+        return ResponseEntity.ok(jadwalPraktikRepository.findByDokter_Poliklinik_Id(poliId));
+    }
+
+    // FITUR BARU 3: Mengambil riwayat janji temu pasien (Rekam Medis)
+    @GetMapping("/riwayat/{pasienId}")
+    public ResponseEntity<?> getRiwayatPasien(@PathVariable Long pasienId) {
+        Pasien pasien = pasienRepository.findById(pasienId).orElse(null);
+        if (pasien == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Pasien tidak ditemukan"));
+        }
+        return ResponseEntity.ok(janjiTemuRepository.findByPasien(pasien));
+    }
+
+    // FITUR EKSISTING: Booking Jadwal (Sudah terhubung ke JanjiTemuService)
     @PostMapping("/booking")
     public ResponseEntity<?> buatJanjiTemu(@RequestBody Map<String, String> data) {
         try {
@@ -35,18 +51,15 @@ public class PasienController {
             LocalDate tanggal = LocalDate.parse(data.get("tanggal"));
             String keluhan = data.get("keluhan");
 
-            // Lempar semua logika pusing ke Service Layer
             JanjiTemu tiket = janjiTemuService.prosesBooking(pasienId, jadwalId, tanggal, keluhan);
 
-            // Jika sukses, kembalikan response JSON ke aplikasi Frontend
             return ResponseEntity.ok(Map.of(
                     "status", "success",
                     "kodeTiket", tiket.getKodeTiket(),
                     "message", "BERHASIL! Anda mendapat Antrean Nomor " + tiket.getNomorAntreanUrut() + "."
             ));
-
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
         }
     }
 }
