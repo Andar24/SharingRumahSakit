@@ -2,21 +2,24 @@ import { router } from './router.js';
 import { auth } from './auth.js';
 import { uiManager } from './ui.js';
 
-// MENGIMPOR LOGIKA KERJA YANG BARU DIBUAT
-import './app-logic.js'; 
+// MENGIMPOR LOGIKA KERJA
+import { initDashboard } from './app-logic.js'; 
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Inisialisasi Navigasi dan Auth
     router.init();
     auth.initEvents();
+    
+    // 2. JALANKAN LOGIKA TARIK DATA DATABASE
+    initDashboard();
 
-    // 2. Tampilkan Tanggal Hari Ini (jika ada elemennya di halaman)
+    // 3. Tampilkan Tanggal Hari Ini
     const tanggalEl = document.getElementById('tanggal-hari-ini');
     if (tanggalEl) {
         tanggalEl.textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    // 3. JEMBATAN UNTUK ATRIBUT HTML: onclick="switchView(...)"
+    // 4. JEMBATAN UNTUK ATRIBUT HTML
     window.switchView = function(targetViewId, clickedElement) {
         document.querySelectorAll('.spa-view').forEach(view => {
             view.classList.remove('active');
@@ -33,13 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if(clickedElement) clickedElement.classList.add('active');
     };
 
-    // 4. JEMBATAN UNTUK ATRIBUT HTML: onclick="toggleModal(...)"
     window.toggleModal = function(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) modal.classList.toggle('active');
     };
 
-    // 5. JEMBATAN UNTUK ATRIBUT HTML: onclick="navigateTo(...)"
     window.navigateTo = function(pageId) {
         router.navigateTo(pageId);
     };
