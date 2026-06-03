@@ -125,31 +125,6 @@
 
 </main>
 
-<script>
-    // Logika sederhana untuk demonstrasi Form Rekam Medis
-    function bukaFormPeriksa(nama, antrean) {
-        document.getElementById('nama-pasien-aktif').innerHTML = `Memeriksa: <strong class="text-primary">${nama} (${antrean})</strong>`;
-        const form = document.getElementById('form-periksa');
-        form.classList.remove('opacity-50', 'pointer-events-none'); // Aktifkan form
-        document.getElementById('input-diagnosis').focus();
-    }
-
-    function selesaikanPemeriksaan(e) {
-        e.preventDefault();
-        // Ambil data
-        const diag = document.getElementById('input-diagnosis').value;
-        const resep = document.getElementById('input-resep').value;
-
-        alert(`Pemeriksaan Selesai!\nDiagnosis: ${diag}\nResep Obat akan langsung masuk ke Dasbor Pasien.`);
-
-        // Bersihkan dan matikan form lagi
-        e.target.reset();
-        e.target.classList.add('opacity-50', 'pointer-events-none');
-        document.getElementById('nama-pasien-aktif').innerText = "Pilih pasien di samping untuk memulai.";
-
-        // Hapus pasien dari antrean UI
-        document.getElementById('card-pasien-1').style.display = 'none';
-    }
-</script>
+<script type="module" src="/js/main.js"></script>
 </body>
 </html>

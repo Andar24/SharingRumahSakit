@@ -134,20 +134,6 @@
 
 </main>
 
-<script>
-    // Simulasi Check-in Pasien
-    function prosesCheckIn() {
-        const btn = document.getElementById('btn-checkin');
-        const status = document.getElementById('status-checkin');
-        btn.innerHTML = `<span class="material-icons" style="font-size: 18px;">hourglass_empty</span> Memproses...`;
-        btn.classList.replace('text-primary', 'text-gray-400');
-
-        setTimeout(() => {
-            btn.style.display = 'none';
-            status.style.display = 'block';
-            status.classList.add('text-yellow-300', 'font-bold');
-        }, 1000);
-    }
-</script>
+<script type="module" src="/js/main.js"></script>
 </body>
 </html>

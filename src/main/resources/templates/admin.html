@@ -315,47 +315,6 @@
     </div>
 </div>
 
-<script>
-    // Fungsi Set Tanggal
-    document.getElementById('tanggal-hari-ini').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
-    // Fungsi Ajaib SPA: Berpindah View
-    function switchView(targetViewId, clickedElement) {
-        // Sembunyikan semua konten
-        document.querySelectorAll('.spa-view').forEach(view => view.classList.remove('active'));
-        // Munculkan konten yang dituju
-        document.getElementById(targetViewId).classList.add('active');
-
-        // Matikan warna biru di semua menu sidebar
-        document.querySelectorAll('#admin-menu .sidebar-item').forEach(item => item.classList.remove('active'));
-        // Nyalakan warna biru pada menu yang sedang di-klik
-        clickedElement.classList.add('active');
-
-        // Ubah Judul Header Dinamis
-        const judulHeader = document.getElementById('header-title');
-        const deskripsiHeader = document.getElementById('header-desc');
-
-        if (targetViewId === 'view-ringkasan') {
-            judulHeader.innerText = "Dasbor Administrator"; deskripsiHeader.innerText = "Pantau seluruh data pengguna dan aktivitas rumah sakit.";
-        } else if (targetViewId === 'view-akun') {
-            judulHeader.innerText = "Manajemen Akun RS"; deskripsiHeader.innerText = "Kelola data hak akses staf, dokter, dan pasien.";
-        } else if (targetViewId === 'view-poli') {
-            judulHeader.innerText = "Operasional Poliklinik"; deskripsiHeader.innerText = "Atur jadwal kerja dokter dan tambah fasilitas poli.";
-        } else if (targetViewId === 'view-artikel') {
-            judulHeader.innerText = "Portal Edukasi Medis"; deskripsiHeader.innerText = "Kelola artikel yang akan tayang di Halaman Publik.";
-        }
-    }
-
-    // Fungsi Menampilkan/Menyembunyikan Modal Tambah Akun
-    function toggleModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.classList.toggle('active');
-    }
-
-    // Trik agar area upload gambar bisa di-klik untuk membuka file manager komputer
-    document.getElementById('dropzone-gambar').addEventListener('click', () => {
-        document.getElementById('artikel-gambar').click();
-    });
-</script>
+<script type="module" src="/js/main.js"></script>
 </body>
 </html>

@@ -258,24 +258,6 @@
     </div>
 </footer>
 
-<script>
-    // Mengatur perpindahan View (Beranda, Layanan, Login)
-    function showView(viewId) {
-        document.querySelectorAll('.spa-view').forEach(el => el.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Mengatur Form Balik Arah antara Login dan Register
-    function toggleAuth(type) {
-        if(type === 'login') {
-            document.getElementById('register-container').style.display = 'none';
-            document.getElementById('login-container').style.display = 'block';
-        } else {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('register-container').style.display = 'block';
-        }
-    }
-</script>
+<script type="module" src="/js/main.js"></script>
 </body>
 </html>
