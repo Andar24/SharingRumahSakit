@@ -1,7 +1,6 @@
-// Menggunakan URL dinamis berbasis lokasi domain browser aktif
 const BASE_URL = `${window.location.origin}/api`;
 
-const ApiService = {
+export const apiClient = {
     async post(endpoint, data) {
         try {
             const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -12,10 +11,12 @@ const ApiService = {
                 },
                 body: JSON.stringify(data)
             });
-            return await response.json();
+            const resData = await response.json();
+            if (!response.ok) throw new Error(resData.message || 'Terjadi kesalahan server');
+            return resData;
         } catch (error) {
-            console.error(`API Post Error pada ${endpoint}:`, error);
-            return { status: 'error', message: 'Gagal terhubung ke server database.' };
+            console.error(`API Post Error:`, error);
+            throw error;
         }
     },
 
@@ -23,16 +24,15 @@ const ApiService = {
         try {
             const response = await fetch(`${BASE_URL}${endpoint}`, {
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
+                headers: { 'Accept': 'application/json' }
             });
+            if (!response.ok) throw new Error('Gagal mengambil data');
             return await response.json();
         } catch (error) {
-            console.error(`API Get Error pada ${endpoint}:`, error);
-            return null;
+            console.error(`API Get Error:`, error);
+            throw error;
         }
     }
 };
 
-window.ApiService = ApiService;
+window.ApiService = apiClient;
