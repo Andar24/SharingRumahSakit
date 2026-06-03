@@ -1,4 +1,26 @@
 // ========================================================================
+// KONFIGURASI UI & NOTIFIKASI (SWEETALERT2)
+// ========================================================================
+const showNotif = (tipe, judul, pesan) => {
+    Swal.fire({
+        icon: tipe, // 'success', 'error', 'warning', 'info'
+        title: judul,
+        text: pesan,
+        confirmButtonColor: '#004ac6',
+        customClass: {
+            popup: 'rounded-3xl',
+            confirmButton: 'rounded-xl font-bold px-6 py-3'
+        }
+    });
+};
+
+const showToast = (pesan) => {
+    Swal.fire({
+        toast: true, position: 'top-end', icon: 'success', title: pesan,
+        showConfirmButton: false, timer: 3000, timerProgressBar: true
+    });
+};
+// ========================================================================
 // SISTEM OTENTIKASI (LOGIN & REGISTER) - INI YANG MEMBUAT ANDA BISA PINDAH HALAMAN
 // ========================================================================
 document.addEventListener('DOMContentLoaded', () => {

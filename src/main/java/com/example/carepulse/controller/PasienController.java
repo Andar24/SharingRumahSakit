@@ -2,11 +2,12 @@ package com.example.carepulse.controller;
 
 import com.example.carepulse.model.*;
 import com.example.carepulse.repository.*;
+import com.example.carepulse.service.JanjiTemuService; // IMPORT SERVICE BARU ANDA
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.*;
 
 @RestController
@@ -18,101 +19,34 @@ public class PasienController {
     @Autowired private JadwalPraktikRepository jadwalPraktikRepository;
     @Autowired private JanjiTemuRepository janjiTemuRepository;
 
-    @PostMapping("/add-keluarga")
-    public ResponseEntity<?> tambahAnggotaKeluarga(@RequestBody Map<String, String> data) {
-        Optional<Pasien> parentOpt = pasienRepository.findByEmail(data.get("emailParent"));
-        if (parentOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Akun utama tidak ditemukan!"));
-        }
+    // Panggil Service yang baru dibuat
+    @Autowired private JanjiTemuService janjiTemuService;
 
-        Pasien anak = new Pasien();
-        anak.setEmail(data.get("nik") + "@keluarga.carepulse.system");
-        anak.setPassword("NO_LOGIN");
-        anak.setRole("PASIEN");
-        anak.setNamaLengkap(data.get("namaLengkap"));
-        anak.setNik(data.get("nik"));
-        anak.setTanggalLahir(LocalDate.parse(data.get("tanggalLahir")));
-        anak.setJenisKelamin(data.get("jenisKelamin"));
-        anak.setGolonganDarah(data.get("golonganDarah"));
-        anak.setAkunUtama(parentOpt.get());
+    // ... (Fungsi GET Poli dan Jadwal biarkan tetap ada) ...
 
-        pasienRepository.save(anak);
-        return ResponseEntity.ok(Map.of("message", "Keluarga berhasil ditambahkan!"));
-    }
-
-    @GetMapping("/list-keluarga")
-    public ResponseEntity<?> getListKeluarga(@RequestParam String emailParent) {
-        Optional<Pasien> parentOpt = pasienRepository.findByEmail(emailParent);
-        if (parentOpt.isEmpty()) return ResponseEntity.badRequest().build();
-
-        Pasien parent = parentOpt.get();
-        List<Map<String, Object>> response = new ArrayList<>();
-
-        response.add(Map.of("id", parent.getId(), "nama", parent.getNamaLengkap() + " (Diri Sendiri)", "umur", Period.between(parent.getTanggalLahir(), LocalDate.now()).getYears()));
-
-        pasienRepository.findByAkunUtama(parent).forEach(k -> response.add(Map.of("id", k.getId(), "nama", k.getNamaLengkap() + " (Keluarga)", "umur", Period.between(k.getTanggalLahir(), LocalDate.now()).getYears())));
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/list-poli")
-    public ResponseEntity<?> getListPoli() {
-        return ResponseEntity.ok(poliklinikRepository.findAll());
-    }
-
-    @GetMapping("/list-jadwal-poli")
-    public ResponseEntity<?> getJadwalByPoli(@RequestParam Long poliId) {
-        List<JadwalPraktik> jadwals = jadwalPraktikRepository.findByDokter_Poliklinik_Id(poliId);
-        List<Map<String, Object>> response = new ArrayList<>();
-        for (JadwalPraktik jp : jadwals) {
-            response.add(Map.of("id", jp.getId(), "namaDokter", jp.getDokter().getNamaLengkap(), "hari", jp.getHari(), "jamMulai", jp.getJamMulai().toString(), "jamSelesai", jp.getJamSelesai().toString(), "kuotaMaksimal", jp.getKuotaMaksimal()));
-        }
-        return ResponseEntity.ok(response);
-    }
-
+    // ==========================================
+    // API Buat Janji Temu (Booking) - VERSI CLEAN
+    // ==========================================
     @PostMapping("/booking")
     public ResponseEntity<?> buatJanjiTemu(@RequestBody Map<String, String> data) {
         try {
-            Pasien pasien = pasienRepository.findById(Long.parseLong(data.get("pasienId"))).orElseThrow(() -> new Exception("Pasien invalid!"));
-            JadwalPraktik jadwal = jadwalPraktikRepository.findById(Long.parseLong(data.get("jadwalId"))).orElseThrow(() -> new Exception("Jadwal invalid!"));
+            Long pasienId = Long.parseLong(data.get("pasienId"));
+            Long jadwalId = Long.parseLong(data.get("jadwalId"));
             LocalDate tanggal = LocalDate.parse(data.get("tanggal"));
+            String keluhan = data.get("keluhan");
 
-            long antreanSekarang = janjiTemuRepository.countByJadwalPraktikAndTanggalKunjungan(jadwal, tanggal);
-            if (antreanSekarang >= jadwal.getKuotaMaksimal()) {
-                return ResponseEntity.badRequest().body(Map.of("message", "KUOTA PENUH! Sudah ada " + antreanSekarang + " pasien terdaftar di tanggal ini."));
-            }
+            // Lempar semua logika pusing ke Service Layer
+            JanjiTemu tiket = janjiTemuService.prosesBooking(pasienId, jadwalId, tanggal, keluhan);
 
-            int nomorAntrean = (int) antreanSekarang + 1;
+            // Jika sukses, kembalikan response JSON ke aplikasi Frontend
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "kodeTiket", tiket.getKodeTiket(),
+                    "message", "BERHASIL! Anda mendapat Antrean Nomor " + tiket.getNomorAntreanUrut() + "."
+            ));
 
-            // PERBAIKAN: MENGGUNAKAN SETTER AGAR TIDAK ERROR CONSTRUCTOR
-            JanjiTemu tiket = new JanjiTemu();
-            tiket.setKodeTiket("CP-" + (System.currentTimeMillis() % 10000));
-            tiket.setPasien(pasien);
-            tiket.setDokter(jadwal.getDokter());
-            tiket.setJadwalPraktik(jadwal);
-            tiket.setTanggalKunjungan(tanggal);
-            tiket.setStatus("Umum");
-            tiket.setNomorAntreanUrut(nomorAntrean);
-            tiket.setKeluhan(data.get("keluhan"));
-
-            janjiTemuRepository.save(tiket);
-
-            return ResponseEntity.ok(Map.of("status", "success", "kodeTiket", tiket.getKodeTiket(), "message", "BERHASIL! Anda mendapat Antrean Nomor " + nomorAntrean + ". Silakan datang pada " + jadwal.getJamMulai() + "."));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
-    }
-
-    @GetMapping("/riwayat")
-    public ResponseEntity<?> getRiwayatPasien(@RequestParam String email) {
-        Optional<Pasien> pasienOpt = pasienRepository.findByEmail(email);
-        if (pasienOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Pasien tidak ditemukan"));
-        }
-
-        Pasien pasien = pasienOpt.get();
-        return ResponseEntity.ok(janjiTemuRepository.findAll().stream()
-                .filter(j -> j.getPasien().getId().equals(pasien.getId()))
-                .toList());
     }
 }

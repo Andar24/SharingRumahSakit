@@ -2,13 +2,15 @@ package com.example.carepulse.controller;
 
 import com.example.carepulse.model.Pasien;
 import com.example.carepulse.model.User;
+import com.example.carepulse.repository.PasienRepository;
+// Pastikan Anda sudah membuat UserRepository (public interface UserRepository extends JpaRepository<User, Long>)
 import com.example.carepulse.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,60 +21,73 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    // --- API LOGIN ---
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> data) {
+    @Autowired
+    private PasienRepository pasienRepository;
+
+    // 1. KITA SUNTIKKAN MESIN ENKRIPSI BCRYPT DI SINI
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // ==========================================
+    // API PENDAFTARAN (REGISTER)
+    // ==========================================
+    @PostMapping("/register")
+    public ResponseEntity<?> registerPasienBaru(@RequestBody Map<String, String> data) {
         try {
-            Optional<User> userOpt = userRepository.findByEmail(data.get("email"));
-
-            if (userOpt.isPresent()) {
-                User user = userOpt.get();
-                if (user.getPassword().equals(data.get("password"))) {
-
-                    Map<String, Object> res = new HashMap<>();
-                    res.put("status", "success");
-
-                    // Filter role untuk staff poli
-                    String role = user.getRole();
-                    if ("PEGAWAI_POLI".equals(role)) role = "POLI";
-
-                    res.put("role", role);
-                    res.put("nama", user.getNamaLengkap());
-                    res.put("email", user.getEmail());
-
-                    return ResponseEntity.ok(res); // 200 OK
-                }
+            // Cek apakah email sudah dipakai orang lain
+            if (userRepository.findByEmail(data.get("email")).isPresent()) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Email sudah terdaftar!"));
             }
 
-            return ResponseEntity.status(401).body(Map.of("message", "Email atau Kata Sandi salah!"));
+            Pasien pasienBaru = new Pasien();
+            pasienBaru.setNamaLengkap(data.get("nama"));
+            pasienBaru.setEmail(data.get("email"));
+            pasienBaru.setNik(data.get("nik"));
+            pasienBaru.setTanggalLahir(LocalDate.parse(data.get("tanggalLahir")));
+            pasienBaru.setJenisKelamin(data.get("jenisKelamin"));
+            pasienBaru.setRole("PASIEN");
+
+            // 2. PROSES ENKRIPSI: Ubah sandi "rahasia123" menjadi "$2a$10$xyz..."
+            String sandiAsli = data.get("password");
+            String sandiAcak = passwordEncoder.encode(sandiAsli);
+            pasienBaru.setPassword(sandiAcak); // Simpan yang sudah diacak ke database
+
+            pasienRepository.save(pasienBaru);
+            return ResponseEntity.ok(Map.of("status", "success", "message", "Pendaftaran berhasil!"));
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message", "Server Error: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("message", "Gagal menyimpan data: " + e.getMessage()));
         }
     }
 
-    // --- API REGISTER ---
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> data) {
-        try {
-            if (userRepository.existsByEmail(data.get("email"))) {
-                return ResponseEntity.status(400).body(Map.of("message", "Email sudah terdaftar di sistem!"));
+    // ==========================================
+    // API MASUK SISTEM (LOGIN)
+    // ==========================================
+    @PostMapping("/login")
+    public ResponseEntity<?> loginSystem(@RequestBody Map<String, String> data) {
+        String emailMasuk = data.get("email");
+        String passwordMasuk = data.get("password");
+
+        Optional<User> userOpt = userRepository.findByEmail(emailMasuk);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // 3. PROSES PENCOCOKAN: Jangan gunakan '==' atau '.equals()' untuk sandi!
+            // Kita gunakan passwordEncoder.matches() agar mesin membandingkan teks asli vs teks acak
+            if (passwordEncoder.matches(passwordMasuk, user.getPassword())) {
+
+                return ResponseEntity.ok(Map.of(
+                        "status", "success",
+                        "email", user.getEmail(),
+                        "nama", user.getNamaLengkap(),
+                        "role", user.getRole()
+                ));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("message", "Kata sandi salah!"));
             }
-
-            Pasien pasienBaru = new Pasien(
-                    data.get("email"),
-                    data.get("password"),
-                    data.get("nama"),
-                    data.get("nik"),
-                    LocalDate.parse(data.get("tanggalLahir")),
-                    data.get("jenisKelamin")
-            );
-
-            userRepository.save(pasienBaru);
-            return ResponseEntity.ok(Map.of("status", "success"));
-
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(Map.of("message", "Format pengisian formulir tidak valid."));
         }
+
+        return ResponseEntity.badRequest().body(Map.of("message", "Email tidak ditemukan!"));
     }
 }

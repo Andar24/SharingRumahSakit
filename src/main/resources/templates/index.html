@@ -5,11 +5,13 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>CarePulse | Portal Kesehatan Terpadu</title>
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <script id="tailwind-config">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -24,19 +26,15 @@
             }
         }
     </script>
+
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; overflow-x: hidden; }
         .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
-
         .glass-nav { background: rgba(247, 249, 251, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(195, 198, 215, 0.3); }
         .hero-gradient { background: radial-gradient(circle at top right, rgba(0, 74, 198, 0.05), transparent 60%); }
         .bento-card { background: #ffffff; border: 1px solid rgba(195, 198, 215, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; cursor: pointer; }
         .bento-card:hover { border-color: rgba(0, 74, 198, 0.4); box-shadow: 0 10px 25px -5px rgba(0, 74, 198, 0.05); transform: translateY(-3px); }
-
-        /* Mengamankan icon agar tidak bocor */
         .material-icons { font-size: 24px; overflow: hidden; white-space: nowrap; user-select: none; }
-
-        /* SPA Transitions */
         .spa-view { display: none; opacity: 0; animation: fadeIn 0.4s ease forwards; }
         .spa-view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
