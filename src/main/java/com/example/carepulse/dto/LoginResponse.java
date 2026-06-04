@@ -5,7 +5,7 @@ public class LoginResponse {
     private String email;
     private String nama;
     private String role;
-    private Long id; // INI WAJIB ADA AGAR JS BISA TARIK DATA
+    private Long id; // WAJIB ADA UNTUK TARIK DATA
 
     public LoginResponse(String token, String email, String nama, String role, Long id) {
         this.token = token;
