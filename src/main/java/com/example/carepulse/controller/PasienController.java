@@ -48,7 +48,7 @@ public class PasienController {
         try {
             Long pasienId = Long.parseLong(data.get("pasienId"));
             Long jadwalId = Long.parseLong(data.get("jadwalId"));
-            LocalDate tanggal = LocalDate.parse(data.get("tanggal"));
+            LocalDate tanggal = LocalDate.parse(data.get("tanggalKunjungan"));
             String keluhan = data.get("keluhan");
 
             JanjiTemu tiket = janjiTemuService.prosesBooking(pasienId, jadwalId, tanggal, keluhan);
@@ -56,6 +56,8 @@ public class PasienController {
             return ResponseEntity.ok(Map.of(
                     "status", "success",
                     "kodeTiket", tiket.getKodeTiket(),
+                    "nomorAntrean", tiket.getNomorAntreanUrut(),
+                    "janjiId", tiket.getId(),
                     "message", "BERHASIL! Anda mendapat Antrean Nomor " + tiket.getNomorAntreanUrut() + "."
             ));
         } catch (Exception e) {

@@ -88,19 +88,19 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600"><span class="material-icons">personal_injury</span></div>
-                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Total Pasien</p><p class="font-display text-2xl font-bold">1,248</p></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Total Pasien</p><p id="stat-total-pasien" class="font-display text-2xl font-bold">...</p></div>
                 </div>
                 <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600"><span class="material-icons">medical_services</span></div>
-                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Dokter Aktif</p><p class="font-display text-2xl font-bold">45</p></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Dokter Aktif</p><p id="stat-dokter-aktif" class="font-display text-2xl font-bold">...</p></div>
                 </div>
                 <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600"><span class="material-icons">support_agent</span></div>
-                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Staf Poli</p><p class="font-display text-2xl font-bold">12</p></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Staf Poli</p><p id="stat-staf-poli" class="font-display text-2xl font-bold">...</p></div>
                 </div>
                 <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm flex items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600"><span class="material-icons">receipt_long</span></div>
-                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Kunjungan Bulan Ini</p><p class="font-display text-2xl font-bold">892</p></div>
+                    <div><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Kunjungan Bulan Ini</p><p id="stat-kunjungan" class="font-display text-2xl font-bold">...</p></div>
                 </div>
             </div>
 
@@ -115,9 +115,9 @@
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
                     <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                         <div class="flex bg-surface border border-outline-variant/30 rounded-xl p-1">
-                            <button class="px-4 py-1.5 text-xs font-bold bg-white shadow-sm rounded-lg text-primary">Semua</button>
-                            <button class="px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary">Pasien</button>
-                            <button class="px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary">Staf RS</button>
+                            <button id="filter-all" onclick="filterUsers('ALL')" class="px-4 py-1.5 text-xs font-bold bg-white shadow-sm rounded-lg text-primary">Semua</button>
+                            <button id="filter-pasien" onclick="filterUsers('PASIEN')" class="px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary">Pasien</button>
+                            <button id="filter-staf" onclick="filterUsers('STAF')" class="px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary">Staf RS</button>
                         </div>
                         <button onclick="toggleModal('modal-tambah-akun')" class="bg-primary text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-primary/90 flex items-center gap-1">
                             <span class="material-icons" style="font-size: 16px;">person_add</span> Buat Akun RS
@@ -127,7 +127,7 @@
 
                 <div class="relative w-full mb-4">
                     <span class="material-icons absolute left-3 top-2.5 text-on-surface-variant" style="font-size: 20px;">search</span>
-                    <input type="text" placeholder="Cari nama, email, atau ID Pengguna..." class="w-full bg-surface border border-outline-variant/30 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary transition-colors">
+                    <input id="search-users" type="text" placeholder="Cari nama, email, atau ID Pengguna..." onkeyup="searchUsers(this.value)" class="w-full bg-surface border border-outline-variant/30 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary transition-colors">
                 </div>
 
                 <div class="overflow-x-auto">
@@ -141,13 +141,11 @@
                             <th class="py-3 px-4 text-center rounded-tr-xl">Aksi</th>
                         </tr>
                         </thead>
-                        <tbody class="divide-y divide-outline-variant/10">
-                        <tr class="hover:bg-surface/50 transition-colors">
-                            <td class="py-3 px-4">
-                                <div class="flex items-center gap-3">
-                                    <img src="https://ui-avatars.com/api/?name=Sarah+Wijaya&background=004ac6&color=fff" class="w-9 h-9 rounded-full">
-                                    <div><p class="font-bold text-on-surface">Dr. Sarah Wijaya</p><p class="text-[11px] text-on-surface-variant">sarah.w@klinik.com</p></div>
-                                </div>
+                        <tbody id="tbody-user-list" class="divide-y divide-outline-variant/10">
+                        <tr>
+                            <td colspan="5" class="py-4 text-center text-gray-500">Memuat data...</td>
+                        </tr>
+                        </tbody>
                             </td>
                             <td class="py-3 px-4"><span class="badge-dokter px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center w-max gap-1"><span class="material-icons" style="font-size: 12px;">medical_services</span> Dokter</span></td>
                             <td class="py-3 px-4"><p class="text-xs font-semibold">Penyakit Dalam</p></td>
@@ -182,7 +180,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm h-max">
                     <h2 class="font-display text-lg font-bold text-on-surface mb-4">Daftarkan Poli Baru</h2>
-                    <form class="space-y-4" onsubmit="event.preventDefault(); alert('Poliklinik berhasil ditambahkan!');">
+                    <form class="space-y-4" onsubmit="handleAddPoli(event)">
                         <div>
                             <label class="text-[10px] font-bold text-on-surface-variant uppercase">Nama Poli</label>
                             <input type="text" placeholder="Misal: Poli Anak" class="w-full border border-outline-variant/50 p-2 text-sm rounded-lg bg-surface focus:border-primary outline-none" required>
@@ -199,15 +197,8 @@
 
                 <div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm">
                     <h2 class="font-display text-lg font-bold text-on-surface mb-4">Daftar Poliklinik Beroperasi</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="border border-outline-variant/50 rounded-2xl p-4 flex items-center justify-between hover:border-primary transition">
-                            <div><h3 class="font-bold text-primary">Penyakit Dalam</h3><p class="text-xs text-on-surface-variant">Kepala: Dr. Sarah W.</p></div>
-                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">Aktif</span>
-                        </div>
-                        <div class="border border-outline-variant/50 rounded-2xl p-4 flex items-center justify-between hover:border-primary transition">
-                            <div><h3 class="font-bold text-primary">Klinik Anak</h3><p class="text-xs text-on-surface-variant">Kepala: Dr. Budi A.</p></div>
-                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">Aktif</span>
-                        </div>
+                    <div id="poli-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <p class="col-span-2 text-gray-500 text-center py-4">Memuat data...</p>
                     </div>
                 </div>
             </div>
@@ -222,7 +213,7 @@
                     </div>
                     <p class="text-xs text-on-surface-variant mb-4">Artikel yang dipublikasi di sini akan langsung muncul di Halaman Landing Page (Beranda Publik).</p>
 
-                    <form id="formAddArtikel" class="space-y-4" onsubmit="event.preventDefault(); alert('Siap ditangkap oleh Integration Engineer (JS)!');">
+                    <form id="formAddArtikel" class="space-y-4" onsubmit="handleAddArtikel(event)">
                         <div>
                             <label class="text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Judul Artikel</label>
                             <input type="text" id="artikel-judul" placeholder="Cara Menjaga Gula Darah..." class="w-full border border-outline-variant/50 p-2.5 text-sm rounded-lg bg-surface focus:border-primary outline-none" required>

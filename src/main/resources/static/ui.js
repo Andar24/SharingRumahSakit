@@ -13,6 +13,25 @@ export const uiManager = {
         });
     },
 
+    async confirm(judul, pesan) {
+        const result = await Swal.fire({
+            title: judul,
+            text: pesan,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#004ac6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Lanjutkan',
+            cancelButtonText: 'Batal',
+            customClass: {
+                popup: 'rounded-3xl',
+                confirmButton: 'rounded-xl font-bold px-6 py-3',
+                cancelButton: 'rounded-xl font-bold px-6 py-3'
+            }
+        });
+        return result.isConfirmed;
+    },
+
     toggleLoading(buttonId, isLoad, originalText = 'Simpan') {
         const btn = document.getElementById(buttonId);
         if (btn) {

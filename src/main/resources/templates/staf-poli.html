@@ -53,7 +53,7 @@
         <div id="view-pengaturan" class="spa-view hidden">
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm max-w-md">
                 <div class="flex items-center gap-2 mb-3 text-on-surface-variant"><span class="material-icons">lock</span><h3 class="font-bold text-sm">Keamanan Sandi</h3></div>
-                <form class="space-y-3" onsubmit="event.preventDefault(); alert('Sandi berhasil diperbarui!');">
+                <form class="space-y-3" onsubmit="handleChangePassword(event)">
                     <input type="password" placeholder="Sandi Lama" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface outline-none" required>
                     <input type="password" placeholder="Sandi Baru" class="w-full border border-outline-variant/50 p-2 text-xs rounded-lg bg-surface outline-none" required>
                     <button type="submit" class="border border-outline-variant/50 text-on-surface-variant w-full py-2 rounded-lg font-bold text-xs hover:bg-gray-100 transition">Ubah Sandi</button>
