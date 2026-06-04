@@ -34,6 +34,7 @@ public class AuthService {
                 user.getEmail(),         // Email user
                 user.getNamaLengkap(),   // Menggunakan getNamaLengkap(), bukan getNama()
                 user.getRole()           // Peran (PASIEN, DOKTER, dll)
+            user.getId()
         );
     }
 }
